@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>QuickFix - Trang chủ</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        :root {
+            --bg: #f5f7fa;
+            --card: #ffffff;
+            --text: #1a1f36;
+            --muted: #6b7280;
+            --primary: #2563eb;
+            --primary-light: #3b82f6;
+            --primary-dark: #1e40af;
+
+            --radius: 16px;
+            --shadow: 0 8px 24px rgba(0,0,0,0.08);
+        }
+
+        body {
+            background: var(--bg);
+            font-family: 'Inter', sans-serif;
+            color: var(--text);
+        }
+
+        /* HEADER */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            padding: 18px 40px;
+            background: white;
+            box-shadow: var(--shadow);
+            align-items: center;
+            border-radius: 0 0 16px 16px;
+        }
+
+        .logo {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        .menu a {
+            margin: 0 18px;
+            text-decoration: none;
+            font-size: 18px;
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .menu a:hover {
+            color: var(--primary);
+        }
+
+        /* BANNER */
+        .banner-modern {
+            background: linear-gradient(120deg, #1e3a8a, #2563eb);
+            color: white;
+            border-radius: 22px;
+            padding: 60px 60px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: var(--shadow);
+            min-height: 260px;
+        }
+
+        .banner-content {
+            width: 50%;
+        }
+
+        .banner-content .title {
+    font-family: 'Poppins', sans-serif;
+    font-size: 3rem;
+    font-weight: 800;
+    line-height: 1.22;
+
+    background: linear-gradient(90deg, #ffffff 0%, #e8eeff 50%, #dbeafe 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+
+    letter-spacing: 0.5px;
+
+    /* Giảm độ bóng để chữ sáng rõ, hiện đại */
+    text-shadow: 0 3px 12px rgba(0, 0, 0, 0.18);
+}
+
+
+
+        .banner-content .subtitle {
+            font-size: 18px;
+            opacity: 0.92;
+        }
+
+        .banner-image {
+            width: 350px;
+            height: 220px;
+            background-image: url('https://cdn-icons-png.flaticon.com/512/1055/1055646.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            opacity: 0.95;
+        }
+
+        /* PRODUCT CARD */
+        .product-card {
+            background: var(--card);
+            padding: 20px;
+            width: 200px;
+            border-radius: 16px;
+            box-shadow: var(--shadow);
+        }
+
+        .product-price {
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        /* WHY CHOOSE US */
+        .benefit-card {
+            background: var(--card);
+            padding: 25px 20px;
+            border-radius: 18px;
+            box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+            transition: 0.25s ease;
+        }
+
+        .benefit-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 10px 26px rgba(0,0,0,0.12);
+        }
+
+        .benefit-icon {
+            font-size: 42px;
+            color: var(--primary);
+            margin-bottom: 15px;
+        }
+
+        .benefit-title {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 6px;
+        }
+
+        .benefit-text {
+            font-size: 15px;
+            color: var(--muted);
+        }
+
+        :root {
+    --bg: #f5f7fa;
+    --card: #ffffff;
+    --text: #1a1f36;
+    --muted: #6b7280;
+    --primary: #2563eb;
+    --primary-light: #3b82f6;
+    --primary-dark: #1e40af;
+
+    --radius: 16px;
+    --shadow: 0 8px 24px rgba(0,0,0,0.08);
+}
+
+body {
+    background: var(--bg);
+    font-family: 'Inter', sans-serif;
+    color: var(--text);
+}
+
+/* HEADER */
+.header {
+    display: flex;
+    justify-content: space-between;
+    padding: 18px 40px;
+    background: white;
+    box-shadow: var(--shadow);
+    align-items: center;
+    border-radius: 0 0 16px 16px;
+}
+
+.logo {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.menu a {
+    margin: 0 18px;
+    text-decoration: none;
+    font-size: 18px;
+    color: var(--text);
+    font-weight: 500;
+}
+
+.menu a:hover {
+    color: var(--primary);
+}
+
+/* BANNER */
+.banner-modern {
+    background: linear-gradient(120deg, #1e3a8a, #2563eb);
+    color: white;
+    border-radius: 22px;
+    padding: 60px 60px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: var(--shadow);
+    min-height: 260px;
+}
+
+.banner-content {
+    width: 50%;
+}
+
+.banner-content .title {
+    font-size: 2.8rem;
+    font-weight: 800;
+    line-height: 1.3;
+}
+
+.banner-content .subtitle {
+    font-size: 18px;
+    opacity: 0.92;
+}
+
+.banner-image {
+    width: 350px;
+    height: 220px;
+    background-image: url('https://cdn-icons-png.flaticon.com/512/1055/1055646.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+    opacity: 0.95;
+}
+
+/* PRODUCT CARD */
+.product-card {
+    background: var(--card);
+    padding: 20px;
+    width: 200px;
+    border-radius: 16px;
+    box-shadow: var(--shadow);
+}
+
+.product-price {
+    color: var(--primary);
+    font-weight: bold;
+}
+
+/* WHY CHOOSE US */
+.benefit-card {
+    background: var(--card);
+    padding: 25px 20px;
+    border-radius: 18px;
+    box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+    transition: 0.25s ease;
+}
+
+.benefit-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 10px 26px rgba(0,0,0,0.12);
+}
+
+.benefit-icon {
+    font-size: 42px;
+    color: var(--primary);
+    margin-bottom: 15px;
+}
+
+.benefit-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.benefit-text {
+    font-size: 15px;
+    color: var(--muted);
+}
+
+/* ===============================
+   SERVICE PROCESS – TIMELINE
+   =============================== */
+
+.timeline-new {
+    padding: 40px 10px;
+    margin-top: 40px;
+}
+
+.timeline-wrapper {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: relative;
+}
+
+/* LINE NỐI DÀI */
+.timeline-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 48px;
+    left: 5%;
+    width: 90%;
+    height: 4px;
+    background: #2563eb;
+    opacity: 0.5;
+    z-index: 0;
+    border-radius: 4px;
+}
+
+.timeline-item {
+    width: 22%;
+    text-align: center;
+    position: relative;
+    z-index: 2;
+}
+
+
+/* ICON TRÒN */
+.circle-icon {
+    width: 95px;
+    height: 95px;
+    border-radius: 50%;
+    background: white;
+    border: 3px solid var(--primary);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 40px;
+    color: var(--primary);
+    margin: 0 auto 12px auto;
+    box-shadow: 0 8px 18px rgba(0, 0, 0, 0.10);
+    transition: 0.25s;
+}
+
+.circle-icon:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 12px 26px rgba(37, 99, 235, 0.35);
+}
+
+/* TIÊU ĐỀ STEP */
+.step-title {
+    font-size: 17px;
+    font-weight: 600;
+    margin-top: 5px;
+    color: var(--text);
+}
+
+/* RESPONSIVE */
+@media (max-width: 820px) {
+    .timeline-wrapper {
+        flex-direction: column;
+        gap: 40px;
+    }
+
+    .timeline-wrapper::before {
+        width: 4px;
+        height: 80%;
+        top: 10%;
+        left: calc(50% - 2px);
+    }
+
+    .timeline-item {
+        width: 100%;
+    }
+}
+
+    </style>
+
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+    <div class="logo">QuickFix</div>
+
+    <div class="menu">
+        <a href="#">Home</a>
+        <a href="{{ url_for('customer_choice') }}">Maintenance</a>
+    </div>
+
+    <div class="menu">
+        <a href="login" style="color: var(--primary); font-weight: 600;">Sign in</a> /
+        <a href="register" style="color: var(--primary); font-weight: 600;">Sign up</a>
+    </div>
+</div>
+
+<div class="container">
+
+    <!-- BANNER -->
+    <div class="banner-modern mt-4">
+        <div class="banner-content">
+            <h1 class="title">Dịch vụ bảo trì & sửa chữa chuyên nghiệp</h1>
+            <p class="subtitle">Sửa chữa - bảo trì - nâng cấp</p>
+            <a href="{{ url_for('customer_choice') }}" class="btn btn-lg btn-light mt-3 shadow-sm">
+                Đặt lịch ngay
+            </a>
+        </div>
+        <div class="banner-image"></div>
+    </div>
+
+    <!-- QUICK SELECTION -->
+    <div class="mt-5">
+        <h4 class="fw-bold">Quick Selection</h4>
+
+        <div class="d-flex gap-4 flex-wrap mt-3">
+
+            <div class="product-card">
+                <div class="fw-semibold">Lỗi phần mềm</div>
+                <span class="product-price">290,000 đ</span>
+            </div>
+
+            <div class="product-card">
+                <div class="fw-semibold">Nâng cấp RAM</div>
+                <span class="product-price">1,190,000 đ</span>
+            </div>
+
+            <div class="product-card">
+                <div class="fw-semibold">Lỗi phần cứng</div>
+                <span class="product-price">1,190,000 đ</span>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- WHY CHOOSE US -->
+    <section class="py-5">
+        <h3 class="fw-bold text-center mb-4">Vì sao chọn QuickFix?</h3>
+
+        <div class="row g-4">
+
+            <div class="col-md-3">
+                <div class="benefit-card text-center">
+                    <i class="bi bi-shield-check benefit-icon"></i>
+                    <div class="benefit-title">Bảo hành 60 ngày</div>
+                    <div class="benefit-text">Cam kết bảo hành đầy đủ cho mọi dịch vụ.</div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="benefit-card text-center">
+                    <i class="bi bi-lightning-charge benefit-icon"></i>
+                    <div class="benefit-title">Có mặt trong 30 phút</div>
+                    <div class="benefit-text">Kỹ thuật viên hỗ trợ tận nơi cực nhanh.</div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="benefit-card text-center">
+                    <i class="bi bi-cpu-fill benefit-icon"></i>
+                    <div class="benefit-title">Linh kiện chính hãng</div>
+                    <div class="benefit-text">100% linh kiện chuẩn từ nhà sản xuất.</div>
+                </div>
+            </div>
+
+            <div class="col-md-3">
+                <div class="benefit-card text-center">
+                    <i class="bi bi-people-fill benefit-icon"></i>
+                    <div class="benefit-title">Đội ngũ chứng nhận</div>
+                    <div class="benefit-text">Kỹ thuật viên giàu kinh nghiệm & được đào tạo.</div>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- SERVICE PROCESS -->
+    <section class="timeline-new">
+    <h2 class="section-title text-center">Service Process</h2>
+
+    <div class="timeline-wrapper">
+
+        <div class="timeline-item">
+            <div class="circle-icon"><i class="bi bi-ui-checks"></i></div>
+            <p class="step-title">Gửi yêu cầu</p>
+        </div>
+
+        <div class="timeline-item">
+            <div class="circle-icon"><i class="bi bi-person-gear"></i></div>
+            <p class="step-title">Gán kỹ thuật viên</p>
+        </div>
+
+        <div class="timeline-item">
+            <div class="circle-icon"><i class="bi bi-tools"></i></div>
+            <p class="step-title">Tiến hành sửa chữa</p>
+        </div>
+
+        <div class="timeline-item">
+            <div class="circle-icon"><i class="bi bi-credit-card"></i></div>
+            <p class="step-title">Thanh toán & bàn giao</p>
+        </div>
+
+    </div>
+</section>
+
+
+</div>
+
+<!-- FOOTER -->
+<footer class="footer-custom mt-5">
+    <div class="container py-5">
+
+        <div class="row">
+
+            <div class="col-lg-4 col-md-6 mb-4">
+                <h4 class="fw-bold mb-3 text-primary">QuickFix</h4>
+                <p class="text-secondary">Dịch vụ sửa chữa & bảo trì thiết bị chuyên nghiệp, nhanh chóng và uy tín.</p>
+                <p class="text-secondary mb-1"><i class="bi bi-geo-alt-fill"></i> 46 Phạm Văn Đồng, Hồ Chí Minh</p>
+                <p class="text-secondary mb-1"><i class="bi bi-telephone-fill"></i> 0936 005 204</p>
+                <p class="text-secondary"><i class="bi bi-envelope-fill"></i> support@quickfix.vn</p>
+            </div>
+
+            <div class="col-lg-2 col-md-3 mb-4">
+                <h5 class="fw-bold mb-3">Liên kết</h5>
+                <ul class="list-unstyled footer-links">
+                    <li><a href="#">Trang chủ</a></li>
+                    <li><a href="#">Dịch vụ</a></li>
+                    <li><a href="#" data-bs-toggle="modal" data-bs-target="#priceModal">Bảng giá</a></li>
+                    <li><a href="#">Đặt lịch</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-3 col-md-3 mb-4">
+                <h5 class="fw-bold mb-3">Hỗ trợ</h5>
+                <ul class="list-unstyled footer-links">
+                    <li><a href="#">Câu hỏi thường gặp</a></li>
+                    <li><a href="#">Chính sách bảo hành</a></li>
+                    <li><a href="#">Điều khoản dịch vụ</a></li>
+                    <li><a href="#">Bảo mật thông tin</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-3 col-md-6 mb-4">
+                <h5 class="fw-bold mb-3">Kết nối với chúng tôi</h5>
+                <div class="d-flex gap-3">
+                    <a class="social-icon" href="#"><i class="bi bi-facebook"></i></a>
+                    <a class="social-icon" href="#"><i class="bi bi-youtube"></i></a>
+                    <a class="social-icon" href="#"><i class="bi bi-chat-dots-fill"></i></a>
+                </div>
+            </div>
+
+        </div>
+
+        <hr>
+
+        <p class="text-center text-secondary mt-3 mb-0">
+            © 2025 QuickFix – All rights reserved.
+        </p>
+
+    </div>
+</footer>
+
+
+<!-- PRICE POPUP -->
+<div class="modal fade" id="priceModal" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content" style="border-radius: 18px; box-shadow: 0 8px 22px rgba(0,0,0,0.12);">
+
+      <div class="modal-header" style="background: linear-gradient(135deg, #1e40af, #2563eb); color: white; border-radius: 16px 16px 0 0;">
+        <h5 class="modal-title fw-bold">Bảng Giá Dịch Vụ</h5>
+        <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body p-4" style="background: #f5f7fa;">
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover align-middle">
+            <thead class="table-primary text-center">
+              <tr>
+                <th>Loại dịch vụ</th>
+                <th>Mô tả lỗi</th>
+                <th>Giá sửa chữa</th>
+              </tr>
+            </thead>
+
+            <tbody>
+
+              <tr>
+                <td rowspan="3"><b>Lỗi phần mềm</b></td>
+                <td>Cài đặt lại hệ điều hành</td>
+                <td class="text-end fw-bold text-primary">150,000 đ</td>
+              </tr>
+
+              <tr>
+                <td>Gỡ ứng dụng – diệt virus</td>
+                <td class="text-end fw-bold text-primary">120,000 đ</td>
+              </tr>
+
+              <tr>
+                <td>Tối ưu hoá – tăng tốc thiết bị</td>
+                <td class="text-end fw-bold text-primary">100,000 đ</td>
+              </tr>
+
+              <tr>
+                <td rowspan="3"><b>Lỗi phần cứng</b></td>
+                <td>Thay màn hình</td>
+                <td class="text-end fw-bold text-danger">1,200,000 đ</td>
+              </tr>
+
+              <tr>
+                <td>Thay pin</td>
+                <td class="text-end fw-bold text-danger">450,000 đ</td>
+              </tr>
+
+              <tr>
+                <td>Thay loa – mic – rung</td>
+                <td class="text-end fw-bold text-danger">250,000 đ</td>
+              </tr>
+
+              <tr>
+                <td rowspan="2"><b>Bảo trì định kỳ</b></td>
+                <td>Vệ sinh thiết bị</td>
+                <td class="text-end fw-bold text-success">80,000 đ</td>
+              </tr>
+
+              <tr>
+                <td>Kiểm tra toàn bộ hệ thống</td>
+                <td class="text-end fw-bold text-success">100,000 đ</td>
+              </tr>
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="modal-footer" style="background: #eef2ff;">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+
+</body>
+</html>

@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block content %}
+<h3>Chi tiết đơn #{{ order.id }}</h3>
+
+<p><strong>Loại:</strong> {{ 'Bảo trì' if order.order_type=='baotri' else 'Sửa chữa' }}</p>
+<p><strong>Trạng thái:</strong> {{ order.status }}</p>
+<p><strong>Mô tả:</strong> {{ order.description }}</p>
+
+<p><strong>Khách hàng:</strong>
+    {{ order.customer.full_name }} | {{ order.customer.phone }}
+</p>
+
+<p><strong>Kỹ thuật viên:</strong>
+    {% if order.technician %}
+        {{ order.technician.full_name }} | {{ order.technician.phone }}
+    {% else %}
+        Chưa gán
+    {% endif %}
+</p>
+
+<hr>
+<h5>Ảnh khách hàng gửi</h5>
+
+<div class="row">
+  {% if images %}
+      {% for img in images %}
+      <div class="col-md-3 mb-2">
+        <div class="card">
+          <img src="{{ url_for('uploaded_file', filename=img.file_path.split('/')[-1]) }}"
+               class="card-img-top" />
+          <div class="card-body p-2">
+            <small>{{ img.created_at }}</small>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+  {% else %}
+      <p>Khách hàng không gửi kèm ảnh.</p>
+  {% endif %}
+</div>
+
+<hr>
+<h5>Lịch sử thay đổi</h5>
+<ul class="list-group">
+  {% for h in history %}
+  <li class="list-group-item">
+    <strong>{{ h.created_at }}:</strong> {{ h.old_status or 'NULL' }} → {{ h.new_status }}
+    <div>{{ h.note }}</div>
+  </li>
+  {% else %}
+  <li class="list-group-item">Chưa có lịch sử.</li>
+  {% endfor %}
+</ul>
+
+{% if session.role in ['technician','admin'] %}
+<hr>
+<h5>Cập nhật trạng thái</h5>
+<form method="post">
+  <input type="hidden" name="action" value="update_status">
+  <div class="mb-2">
+    <select name="status" class="form-select">
+      <option value="moi" {% if order.status=='moi' %}selected{% endif %}>Mới</option>
+      <option value="dang_xu_ly" {% if order.status=='dang_xu_ly' %}selected{% endif %}>Đang xử lý</option>
+      <option value="da_hoan_thanh" {% if order.status=='da_hoan_thanh' %}selected{% endif %}>Đã hoàn thành</option>
+    </select>
+  </div>
+  <div class="mb-2">
+    <textarea name="note" class="form-control" placeholder="Ghi chú (tuỳ chọn)"></textarea>
+  </div>
+  <button class="btn btn-success">Cập nhật</button>
+</form>
+{% endif %}
+
+{% endblock %}
+
+{% if session.role == 'admin' %}
+<hr>
+<h5>Gán kỹ thuật viên</h5>
+<form method="post" action="{{ url_for('admin', order_id=order.id) }}">
+  <div class="mb-2">
+    <select name="technician_id" class="form-select">
+      <option value="">Chưa gán</option>
+      {% for tech in technicians %}
+        <option value="{{ tech.id }}" {% if order.technician and order.technician.id == tech.id %}selected{% endif %}>
+          {{ tech.full_name }}
+        </option>
+      {% endfor %}
+    </select>
+  </div>
+  <button type="submit" class="btn btn-primary">Gán</button>
+</form>
+{% endif %}

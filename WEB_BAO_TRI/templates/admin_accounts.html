@@ -1,0 +1,143 @@
+{% extends "base.html" %}
+{% block content %}
+
+<style>
+    .table-hover tbody tr:hover {
+        background-color: #f6f8fb;
+    }
+    .role-badge {
+        font-size: 0.85rem;
+        padding: 6px 10px;
+        border-radius: 8px;
+    }
+    .badge-admin {
+        background: #0d6efd;
+    }
+    .badge-tech {
+        background: #198754;
+    }
+    .badge-customer {
+        background: #6c757d;
+    }
+</style>
+
+<!-- NAVIGATION TABS -->
+<ul class="nav nav-tabs mb-4">
+
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('admin_orders') }}">Đơn</a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link active" href="{{ url_for('admin_accounts') }}">Tài khoản</a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('admin_reports') }}">Báo cáo</a>
+    </li>
+
+</ul>
+
+
+
+<div class="card shadow-sm">
+    <div class="card-header bg-primary text-white">
+        <h4 class="mb-0">Quản lý tài khoản</h4>
+    </div>
+
+    <div class="card-body">
+
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+            <div class="alert alert-success">{{ messages[0] }}</div>
+        {% endif %}
+        {% endwith %}
+
+        <!-- FILTER BY ROLE -->
+            <div class="row g-3 mb-4">
+    <div class="col-md-4">
+
+
+        <select id="roleFilter" class="form-select" onchange="filterByRole()">
+            <option value="">Tất cả</option>
+            <option value="admin" {% if filter_role == 'admin' %}selected{% endif %}>Admin</option>
+            <option value="technician" {% if filter_role == 'technician' %}selected{% endif %}>Kỹ thuật viên</option>
+            <option value="delivery" {% if filter_role == 'delivery' %}selected{% endif %}>Nhân viên giao</option>
+            <option value="customer" {% if filter_role == 'customer' %}selected{% endif %}>Khách hàng</option>
+        </select>
+    </div>
+</div>
+
+<script>
+function filterByRole() {
+    const role = document.getElementById("roleFilter").value;
+    window.location.href = "/admin/accounts?role=" + role;
+}
+</script>
+
+
+
+        <div class="table-responsive">
+            <table class="table table-bordered table-hover align-middle bg-white">
+
+                <thead class="table-dark">
+                    <tr>
+                        <th style="width:60px;">ID</th>
+                        <th>Tên</th>
+                        <th>Email</th>
+                        <th>SĐT</th>
+                        <th class="text-center">Quyền</th>
+                        <th class="text-center">Hành động</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                {% for u in users %}
+                    <tr>
+                        <td>{{ u.id }}</td>
+                        <td>{{ u.full_name }}</td>
+                        <td>{{ u.email }}</td>
+                        <td>{{ u.phone }}</td>
+
+                        <td class="text-center">
+                            {% if u.role == 'admin' %}
+                                <span class="role-badge badge-admin text-white">Admin</span>
+                            {% elif u.role == 'technician' %}
+                                <span class="role-badge badge-tech text-white">Kỹ thuật viên</span>
+                            {% elif u.role == 'delivery' %}
+                                <span class="role-badge text-white" style="background:#d97706;">Nhân viên giao</span>
+                            {% else %}
+                                <span class="role-badge badge-customer text-white">Khách hàng</span>
+                            {% endif %}
+
+                        </td>
+
+                        <td class="text-center">
+                            <form method="POST"
+                                  action="{{ url_for('admin_update_role', user_id=u.id) }}"
+                                  class="d-flex justify-content-center">
+
+                                <select name="role" class="form-select w-auto me-2">
+                                    <option value="customer"  {% if u.role=='customer' %}selected{% endif %}>Khách hàng</option>
+                                    <option value="technician" {% if u.role=='technician' %}selected{% endif %}>Kỹ thuật viên</option>
+                                    <option value="admin" {% if u.role=='admin' %}selected{% endif %}>Admin</option>
+                                     <option value="delivery" {% if u.role=='delivery' %}selected{% endif %}>Nhân viên giao</option>
+                                </select>
+
+                                <button class="btn btn-success btn-sm">
+                                    Lưu
+                                </button>
+
+                            </form>
+                        </td>
+
+                    </tr>
+                {% endfor %}
+                </tbody>
+
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,531 @@
+{% extends "base.html" %}
+
+{% block head %}
+{{ super() }}
+
+<style>
+
+/* =====================================================
+   GLOBAL THEME
+===================================================== */
+:root {
+  --bg: #f3f6fc;
+  --card: #ffffff;
+
+  --primary: #2563eb;
+  --primary-light: #3b82f6;
+  --primary-dark: #1e40af;
+
+  --text: #1a1f36;
+  --muted: #64748b;
+
+  --radius: 22px;
+  --radius-big: 32px;
+
+  --shadow: 0 10px 28px rgba(0,0,0,0.08);
+  --shadow-strong: 0 18px 48px rgba(0,0,0,0.15);
+}
+
+body {
+  background: var(--bg);
+  font-family: "Inter", sans-serif;
+  color: var(--text);
+}
+
+
+/* =====================================================
+   HERO SECTION
+===================================================== */
+.hero {
+  background: linear-gradient(135deg,#1e3a8a,#2563eb,#3b82f6);
+  padding: 70px 40px;
+  border-radius: var(--radius-big);
+  box-shadow: var(--shadow-strong);
+  text-align: center;
+  color: white;
+  margin-bottom: 47px;
+  animation: fadeHero 0.8s ease-out;
+}
+
+.hero h1 {
+  font-size: 2.8rem;
+  font-weight: 800;
+}
+
+.hero p {
+  font-size: 1.2rem;
+  opacity: .85;
+  margin-top: 5px;
+}
+
+@keyframes fadeHero {
+  from {opacity: 0; transform: translateY(-25px);}
+  to   {opacity: 1; transform: translateY(0);}
+}
+
+
+/* =====================================================
+   CARD UI
+===================================================== */
+.card-ui {
+  background: var(--card);
+  padding: 38px;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  transition: .25s;
+  animation: fadeUp 0.7s ease;
+}
+
+.card-ui:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-strong);
+}
+
+@keyframes fadeUp {
+  from {opacity: 0; transform: translateY(30px);}
+  to   {opacity: 1; transform: translateY(0);}
+}
+
+
+/* =====================================================
+   BUTTONS
+===================================================== */
+.btn-lg {
+  padding: 15px 26px;
+  border-radius: 14px;
+  font-size: 1.12rem;
+  font-weight: 600;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg,#1e40af,#2563eb);
+  border: none;
+}
+
+.btn-primary:hover {
+  background: linear-gradient(135deg,#1e3a8a,#1d4ed8);
+  transform: scale(1.05);
+}
+
+.btn-outline-danger,
+.btn-outline-secondary,
+.btn-outline-dark {
+  border-width: 2px;
+}
+
+.btn-outline-danger:hover {
+  background: #fee2e2;
+}
+
+.btn-outline-secondary:hover {
+  background: #f1f5f9;
+}
+
+.btn-outline-dark:hover {
+  background: #e2e8f0;
+}
+
+
+/* =====================================================
+   FORM UI
+===================================================== */
+.form-control {
+  border-radius: 14px;
+  padding: 13px;
+  border: 1px solid #d0d7e2;
+  transition: .2s;
+}
+
+.form-control:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(37,99,235,0.25);
+}
+
+.form-label {
+  font-weight: 600;
+}
+
+
+/* =====================================================
+   PROCESS TIMELINE
+===================================================== */
+.process-wrap {
+  margin-top: 80px;
+  margin-bottom: 60px;
+}
+
+.process-title {
+  text-align: center;
+  font-size: 2.2rem;
+  font-weight: 700;
+  color: var(--primary-dark);
+  margin-bottom: 50px;
+}
+
+.timeline-container {
+  position: relative;
+}
+
+.timeline-line {
+  position: absolute;
+  top: 50px;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: #dbe4ff;
+  z-index: 1;
+}
+
+.process-item {
+  text-align: center;
+  z-index: 2;
+  position: relative;
+}
+
+.process-icon {
+  width: 100px;
+  height: 100px;
+  border-radius: 50%;
+  background: white;
+  border: 3px solid var(--primary-light);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2rem;
+  margin: auto;
+  box-shadow: var(--shadow);
+  transition: .3s;
+}
+
+.process-icon:hover {
+  transform: scale(1.13);
+  background: #eef4ff;
+}
+
+.process-text {
+  font-weight: 700;
+  margin-top: 12px;
+  font-size: 1.05rem;
+}
+
+
+/* =====================================================
+   MODAL
+===================================================== */
+/* Căn đối xứng toàn bảng */
+#priceModal table {
+  width: 100%;
+  table-layout: fixed; /* Cố định độ rộng từng cột */
+}
+
+/* Chỉnh đều 3 cột */
+#priceModal th:nth-child(1),
+#priceModal td:first-child {
+  width: 22%;
+  text-align: center;
+  vertical-align: middle;
+}
+
+#priceModal th:nth-child(2),
+#priceModal td:nth-child(2) {
+  width: 60%;
+}
+
+#priceModal th:nth-child(3),
+#priceModal td:last-child {
+  width: 18%;
+  text-align: right;
+  vertical-align: middle;
+}
+
+/* Căn giữa chữ loại dịch vụ khi dùng rowspan */
+#priceModal td[rowspan] {
+  text-align: center;
+  vertical-align: middle !important;
+  font-weight: 700;
+}
+
+
+</style>
+{% endblock %}
+
+
+{% block content %}
+<div class="container py-4">
+
+  <!-- HERO -->
+  <div class="hero">
+      <h1>Dịch vụ Bảo trì & Sửa chữa Chuyên nghiệp</h1>
+      <p>Giải pháp nhanh chóng – uy tín – tối ưu chi phí dành cho bạn</p>
+  </div>
+
+
+  <div class="row g-4">
+
+    <!-- LEFT -->
+    <div class="col-md-6">
+      <div class="card-ui">
+
+        <h4 class="fw-bold mb-1">Chọn loại dịch vụ</h4>
+        <p class="text-muted">Hãy chọn yêu cầu bạn muốn thực hiện.</p>
+
+        <div class="d-flex flex-wrap gap-3 mt-3">
+          <a class="btn btn-primary btn-lg" href="{{ url_for('customer_form', order_type='baotri') }}">
+            <i class="bi bi-arrow-repeat me-2"></i> Bảo trì
+          </a>
+
+          <a class="btn btn-outline-danger btn-lg" href="{{ url_for('customer_form', order_type='suachua') }}">
+            <i class="bi bi-wrench me-2"></i> Sửa chữa
+          </a>
+
+          <a class="btn btn-outline-secondary btn-lg" href="{{ url_for('my_orders') }}">
+            <i class="bi bi-card-list me-2"></i> Đơn của tôi
+          </a>
+        </div>
+
+        <div class="mt-4">
+          <button class="btn btn-outline-dark btn-lg shadow-sm" data-bs-toggle="modal" data-bs-target="#priceModal">
+            <i class="bi bi-cash-coin me-2"></i> Xem bảng giá
+          </button>
+        </div>
+
+      </div>
+    </div>
+
+
+    <!-- RIGHT -->
+    <div class="col-md-6">
+      <div class="card-ui">
+
+        <h4 class="fw-bold mb-3">Tạo yêu cầu nhanh</h4>
+
+        <form method="post" action="{{ url_for('customer_form', order_type='baotri') }}">
+
+          <div class="mb-3">
+            <label class="form-label">Họ tên</label>
+            <input class="form-control" name="full_name" required>
+          </div>
+
+          <div class="d-flex gap-3 mb-3">
+            <div class="flex-fill">
+              <label class="form-label">SĐT</label>
+              <input class="form-control" name="phone" required>
+            </div>
+
+            <div class="flex-fill">
+              <label class="form-label">Email</label>
+              <input class="form-control" name="email">
+            </div>
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Địa chỉ</label>
+            <input class="form-control" name="address">
+          </div>
+
+          <div class="mb-3">
+            <label class="form-label">Mô tả yêu cầu</label>
+            <textarea class="form-control" rows="3" name="description"></textarea>
+          </div>
+
+          <button class="btn btn-success btn-lg w-100">Gửi yêu cầu</button>
+
+        </form>
+
+      </div>
+    </div>
+
+  </div>
+
+
+
+
+
+
+
+
+</div>
+
+
+
+<!-- MODAL -->
+<div class="modal fade" id="priceModal" tabindex="-1">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content">
+
+      <div class="modal-header" style="background: linear-gradient(135deg,#1e40af,#2563eb); color:white;">
+        <h5 class="modal-title fw-bold">Bảng Giá Dịch Vụ</h5>
+        <button class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+      </div>
+
+      <div class="modal-body p-4" style="background: #f3f6fc">
+
+        <div class="table-responsive">
+          <table class="table table-bordered table-hover bg-white shadow-sm">
+
+            <thead class="table-primary text-center">
+      <tr>
+        <th style="width: 22%">Loại dịch vụ</th>
+        <th>Mô tả / Hạng mục</th>
+        <th style="width: 18%">Giá</th>
+      </tr>
+    </thead>
+
+            <tbody>
+            <tr>
+        <td rowspan="5"><b>Lỗi phần mềm</b></td>
+        <td>Cài đặt lại hệ điều hành (Windows / macOS)</td>
+        <td class="text-end fw-bold text-primary">150,000 đ</td>
+      </tr>
+      <tr>
+        <td>Cài đặt ứng dụng – cấu hình phần mềm</td>
+        <td class="text-end fw-bold text-primary">50,000 – 120,000 đ</td>
+      </tr>
+      <tr>
+        <td>Gỡ ứng dụng – diệt virus – làm sạch hệ thống</td>
+        <td class="text-end fw-bold text-primary">120,000 đ</td>
+      </tr>
+      <tr>
+        <td>Tối ưu hóa hiệu năng – dọn rác – tăng tốc</td>
+        <td class="text-end fw-bold text-primary">100,000 đ</td>
+      </tr>
+      <tr>
+        <td>Khôi phục dữ liệu mức cơ bản</td>
+        <td class="text-end fw-bold text-primary">150,000 – 300,000 đ</td>
+      </tr>
+              <tr>
+        <td rowspan="5"><b>Lỗi phần mềm</b></td>
+        <td>Cài đặt lại hệ điều hành (Windows / macOS)</td>
+        <td class="text-end fw-bold text-primary">150,000 đ</td>
+      </tr>
+      <tr>
+        <td>Cài đặt ứng dụng – cấu hình phần mềm</td>
+        <td class="text-end fw-bold text-primary">50,000 – 120,000 đ</td>
+      </tr>
+      <tr>
+        <td>Gỡ ứng dụng – diệt virus – làm sạch hệ thống</td>
+        <td class="text-end fw-bold text-primary">120,000 đ</td>
+      </tr>
+      <tr>
+        <td>Tối ưu hóa hiệu năng – dọn rác – tăng tốc</td>
+        <td class="text-end fw-bold text-primary">100,000 đ</td>
+      </tr>
+      <tr>
+        <td>Khôi phục dữ liệu mức cơ bản</td>
+        <td class="text-end fw-bold text-primary">150,000 – 300,000 đ</td>
+      </tr>
+
+      <!-- ==================== PHẦN CỨNG ==================== -->
+      <tr>
+        <td rowspan="5"><b>Lỗi phần cứng</b></td>
+        <td>Thay màn hình điện thoại / laptop</td>
+        <td class="text-end fw-bold text-danger">1,000,000 – 3,500,000 đ</td>
+      </tr>
+      <tr>
+        <td>Thay pin</td>
+        <td class="text-end fw-bold text-danger">350,000 – 700,000 đ</td>
+      </tr>
+      <tr>
+        <td>Thay loa – mic – rung</td>
+        <td class="text-end fw-bold text-danger">250,000 – 450,000 đ</td>
+      </tr>
+      <tr>
+        <td>Sửa lỗi main – nguồn – IC</td>
+        <td class="text-end fw-bold text-danger">300,000 – 1,200,000 đ</td>
+      </tr>
+      <tr>
+        <td>Thay cáp tín hiệu (màn hình / cảm ứng)</td>
+        <td class="text-end fw-bold text-danger">150,000 – 500,000 đ</td>
+      </tr>
+
+      <!-- ==================== LINH KIỆN ==================== -->
+      <tr>
+        <td rowspan="4"><b>Thay thế linh kiện</b></td>
+        <td>SSD 120GB / 240GB / 480GB</td>
+        <td class="text-end fw-bold">350,000 – 850,000 đ</td>
+      </tr>
+      <tr>
+        <td>RAM 4GB / 8GB / 16GB</td>
+        <td class="text-end fw-bold">300,000 – 1,200,000 đ</td>
+      </tr>
+      <tr>
+        <td>Thay bàn phím laptop</td>
+        <td class="text-end fw-bold">350,000 – 650,000 đ</td>
+      </tr>
+      <tr>
+        <td>Thay sạc – adapter</td>
+        <td class="text-end fw-bold">250,000 – 450,000 đ</td>
+      </tr>
+
+      <!-- ==================== BẢO TRÌ ==================== -->
+      <tr>
+        <td rowspan="4"><b>Bảo trì – vệ sinh</b></td>
+        <td>Vệ sinh thiết bị (điện thoại / laptop / PC)</td>
+        <td class="text-end fw-bold text-success">80,000 – 150,000 đ</td>
+      </tr>
+      <tr>
+        <td>Vệ sinh laptop + thay keo tản nhiệt</td>
+        <td class="text-end fw-bold text-success">150,000 – 250,000 đ</td>
+      </tr>
+      <tr>
+        <td>Vệ sinh PC (full) + cân chỉnh gió</td>
+        <td class="text-end fw-bold text-success">120,000 – 220,000 đ</td>
+      </tr>
+      <tr>
+        <td>Kiểm tra tổng quan thiết bị</td>
+        <td class="text-end fw-bold text-success">100,000 đ</td>
+      </tr>
+
+      <!-- ==================== LAPTOP ==================== -->
+      <tr>
+        <td rowspan="4"><b>Dịch vụ Laptop</b></td>
+        <td>Sửa cổng sạc / USB / HDMI</td>
+        <td class="text-end fw-bold">150,000 – 400,000 đ</td>
+      </tr>
+      <tr>
+        <td>Sửa bản lề laptop</td>
+        <td class="text-end fw-bold">250,000 – 450,000 đ</td>
+      </tr>
+      <tr>
+        <td>Thay quạt CPU</td>
+        <td class="text-end fw-bold">200,000 – 500,000 đ</td>
+      </tr>
+      <tr>
+        <td>Thay pin laptop</td>
+        <td class="text-end fw-bold">450,000 – 900,000 đ</td>
+      </tr>
+
+      <!-- ==================== PC ==================== -->
+      <tr>
+        <td rowspan="4"><b>Dịch vụ PC</b></td>
+        <td>Lắp đặt PC – đi dây – tối ưu airflow</td>
+        <td class="text-end fw-bold">150,000 – 300,000 đ</td>
+      </tr>
+      <tr>
+        <td>Thay PSU / Mainboard</td>
+        <td class="text-end fw-bold">250,000 – 600,000 đ</td>
+      </tr>
+      <tr>
+        <td>Thay tản nhiệt (Air / Water)</td>
+        <td class="text-end fw-bold">150,000 – 350,000 đ</td>
+      </tr>
+      <tr>
+        <td>Build PC mới theo yêu cầu</td>
+        <td class="text-end fw-bold">150,000 đ</td>
+      </tr>
+            </tbody>
+
+          </table>
+        </div>
+
+      </div>
+
+      <div class="modal-footer" style="background:#e2e8ff">
+        <button class="btn btn-secondary" data-bs-dismiss="modal">Đóng</button>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+{% endblock %}

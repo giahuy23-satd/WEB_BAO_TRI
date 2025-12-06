@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h3>Form {{ 'Bảo trì' if order_type=='baotri' else 'Sửa chữa' }}</h3>
+
+<form method="post" enctype="multipart/form-data">
+
+
+  <div class="mb-3">
+    <label class="form-label">SĐT</label>
+    <input class="form-control" name="phone">
+  </div>
+
+
+
+
+  <div class="mb-3">
+    <label class="form-label">Địa chỉ</label>
+    <input class="form-control" name="address">
+  </div>
+
+  <div class="mb-3">
+    <label class="form-label">Mô tả (tùy chọn)</label>
+    <textarea class="form-control" name="description"></textarea>
+  </div>
+
+  <!-- PHẦN UPLOAD ẢNH -->
+  <div class="mb-3">
+    <label class="form-label">Ảnh đính kèm (nếu có)</label>
+    <input type="file" name="images" class="form-control" multiple>
+    <small class="text-muted">Cho phép tải nhiều ảnh.</small>
+  </div>
+
+  <button class="btn btn-primary" type="submit">Gửi yêu cầu</button>
+  <a class="btn btn-secondary" href="{{ url_for('customer_choice') }}">Hủy</a>
+</form>
+
+{% endblock %}

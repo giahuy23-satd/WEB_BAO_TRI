@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h2 class="mb-4">Admin Dashboard</h2>
+
+<ul class="nav nav-tabs mb-3">
+
+    <li class="nav-item">
+        <a class="nav-link {% if tab=='orders' %}active{% endif %}"
+           href="{{ url_for('admin_orders') }}">
+            Đơn
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link {% if tab=='accounts' %}active{% endif %}"
+           href="{{ url_for('admin_accounts') }}">
+            Tài khoản
+        </a>
+    </li>
+
+    <li class="nav-item">
+        <a class="nav-link {% if tab=='reports' %}active{% endif %}"
+           href="{{ url_for('admin_reports') }}">
+            Báo cáo
+        </a>
+    </li>
+
+</ul>
+
+
+<!-- NỘI DUNG TÙY THEO TAB -->
+{% if tab == "orders" %}
+    {% include "admin_orders.html" %}
+{% elif tab == "accounts" %}
+    {% include "admin_accounts.html" %}
+{% elif tab == "reports" %}
+    {% include "admin_reports.html" %}
+{% endif %}
+
+{% endblock %}
