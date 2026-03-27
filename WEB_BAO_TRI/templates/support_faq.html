@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container py-5">
+    <h2 class="fw-bold mb-4">❓ Câu hỏi thường gặp</h2>
+
+    <div class="accordion" id="faq">
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button" data-bs-toggle="collapse" data-bs-target="#q1">
+                    Tôi đặt sửa chữa như thế nào?
+                </button>
+            </h2>
+            <div id="q1" class="accordion-collapse collapse show">
+                <div class="accordion-body">
+                    Bạn chỉ cần đăng ký tài khoản → tạo đơn → hệ thống sẽ tự động điều phối kỹ thuật viên phù hợp.
+                </div>
+            </div>
+        </div>
+
+        <div class="accordion-item">
+            <h2 class="accordion-header">
+                <button class="accordion-button collapsed" data-bs-toggle="collapse" data-bs-target="#q2">
+                    Tôi có theo dõi tiến độ không?
+                </button>
+            </h2>
+            <div id="q2" class="accordion-collapse collapse">
+                <div class="accordion-body">
+                    Có. Bạn có thể xem tiến độ xử lý, hình ảnh, kỹ thuật viên và lịch sử xử lý trong hệ thống.
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

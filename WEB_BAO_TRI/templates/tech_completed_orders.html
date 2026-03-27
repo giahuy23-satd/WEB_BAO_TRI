@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Đơn Hoàn Thành</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: #f5f6fa;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 230px;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: #1e40af;
+            color: white;
+            padding-top: 20px;
+             display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar a {
+            color: #dbeafe;
+            padding: 12px 20px;
+            display: block;
+            text-decoration: none;
+            font-size: 15px;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: rgba(255,255,255,0.1);
+            border-left: 3px solid #93c5fd;
+            color: white;
+        }
+
+        /* CONTENT */
+        .content {
+            margin-left: 240px;
+            padding: 25px;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h4 class="text-center mb-4 fw-bold">QuickFIX</h4>
+
+
+    <a href="{{ url_for('technician') }}">
+        <i class="bi bi-list-task me-2"></i> Đơn được giao
+    </a>
+
+
+    <a href="{{ url_for('technician_completed_orders') }}" >
+        <i class="bi bi-check-circle me-2"></i> Đơn đã hoàn thành
+    </a>
+
+    {% if session.role == 'admin' %}
+    <a href="{{ url_for('admin_dashboard') }}">
+        <i class="bi bi-speedometer2 me-2"></i> Trang Admin
+    </a>
+    {% endif %}
+
+    <div style="flex-grow: 1;"></div>
+    <a href="{{ url_for('technician_skills') }}">
+        <i class="bi bi-list-stars me-2"></i> Kỹ năng của tôi
+    </a>
+
+
+    <a href="{{ url_for('logout') }}">
+        <i class="bi bi-box-arrow-left me-2"></i> Đăng xuất
+    </a>
+</div>
+
+
+<!-- CONTENT -->
+<div class="content">
+
+    <h3 class="fw-bold mb-4">
+        <i class="bi bi-check-circle text-success"></i>
+        Đơn đã hoàn thành
+    </h3>
+
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <table class="table table-hover align-middle mb-0">
+                <thead class="table-light">
+                <tr>
+                    <th>#</th>
+                    <th>Khách hàng</th>
+                    <th>Mô tả</th>
+                    <th>Tiến độ</th>
+                    <th>Giá tiền</th>
+                    <th width="170">Hành động</th>
+                    <th width="90">Chi tiết</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                    {% for o in orders %}
+                    <tr>
+                        <td>{{ o.id }}</td>
+
+                        <td>
+                            <strong>{{ o.customer.full_name }}</strong><br>
+                            <small class="text-muted">{{ o.customer.phone }}</small>
+                        </td>
+
+                        <td>{{ o.description }}</td>
+
+                        <td>
+                            <span class="badge bg-success">100%</span>
+                        </td>
+
+                        <!-- PRICE -->
+                        <td>
+                            {% if o.price %}
+                                <span class="fw-bold text-success">
+                                    {{ "{:,}".format(o.price) }} đ
+                                </span>
+                            {% else %}
+                                <span class="text-muted">Chưa nhập</span>
+                            {% endif %}
+                        </td>
+
+                        <!-- ACTION -->
+                        <td>
+                            {% if not o.price %}
+                            <form method="post"
+                                  action="{{ url_for('update_order_price', order_id=o.id) }}">
+                                <input type="number"
+                                       name="price"
+                                       min="0"
+                                       class="form-control form-control-sm mb-2"
+                                       placeholder="Nhập giá"
+                                       required>
+
+                                <button class="btn btn-sm btn-success w-100">
+                                    <i class="bi bi-cash"></i> Lưu giá
+                                </button>
+                            </form>
+                            {% else %}
+                                <span class="text-muted">Đã hoàn tất</span>
+                            {% endif %}
+                        </td>
+
+
+                        <td>
+                            <a href="{{ url_for('order_detail', order_id=o.id) }}"
+                               class="btn btn-sm btn-outline-primary w-100">
+                                <i class="bi bi-eye"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="7" class="text-center text-muted py-4">
+                            Không có đơn hoàn thành
+                        </td>
+                    </tr>
+                    {% endfor %}
+                    </tbody>
+
+            </table>
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>

@@ -1,44 +1,180 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <title>Đơn của tôi</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
+{% extends "base.html" %}
+{% block content %}
 
-<body class="bg-light">
-<div class="container py-4">
+<style>
+.order-card {
+    background: white;
+    border-radius: 18px;
+    padding: 22px;
+    box-shadow: 0 12px 35px rgba(0,0,0,.08);
+}
 
-    <h2 class="mb-4">Lịch sử đơn của tôi</h2>
+.order-table th {
+    background: #f8fafc;
+    font-weight: 700;
+    color: #334155;
+    border: none;
+}
 
-    <table class="table table-bordered bg-white shadow-sm">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Loại</th>
-                <th>Mô tả</th>
-                <th>Trạng thái</th>
-                <th>Ngày tạo</th>
-                <th>Xem</th>
-            </tr>
-        </thead>
+.order-table td {
+    border-top: none;
+    padding: 16px 12px;
+}
 
-        <tbody>
-        {% for o in orders %}
-            <tr>
-                <td>{{ o.id }}</td>
-                <td>{{ o.type }}</td>
-                <td>{{ o.description }}</td>
-                <td><span class="badge bg-info">{{ o.status }}</span></td>
-                <td>{{ o.created_at }}</td>
-                <td>
-                    <a href="/order/{{ o.id }}" class="btn btn-sm btn-primary">Chi tiết</a>
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+.order-row {
+    transition: .25s;
+    border-radius: 14px;
+}
+
+.order-row:hover {
+    background: linear-gradient(90deg,#f8fbff,#eef4ff);
+    transform: scale(1.01);
+}
+
+.order-id {
+    font-weight: 800;
+    color: #2563eb;
+}
+
+.order-price {
+    font-size: 1.05rem;
+}
+
+.progress {
+    height: 20px;
+    border-radius: 20px;
+    background: #e5e7eb;
+}
+.status-cancel {background:#fee2e2; color:#991b1b;}
+
+.progress-bar {
+    font-weight: 700;
+    border-radius: 20px;
+}
+
+.badge-status {
+    padding: 8px 14px;
+    border-radius: 999px;
+    font-size: .8rem;
+}
+
+.status-new {background:#e5e7eb; color:#334155;}
+.status-working {background:#fef3c7; color:#92400e;}
+.status-done {background:#dcfce7; color:#166534;}
+</style>
+
+<div class="container py-5">
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <div>
+    <h2 class="fw-bold">📋 Đơn hàng của tôi</h2>
+    <p class="text-muted">Theo dõi tiến độ và chi phí theo thời gian thực</p>
+  </div>
+
+    <a href="javascript:history.back()" class="btn btn-light btn-sm back-btn shadow">
+        ⬅ Quay lại
+    </a>
+</div>
+
+<div class="order-card">
+
+<table class="table order-table align-middle">
+<thead>
+<tr>
+  <th>Đơn</th>
+  <th>Loại</th>
+  <th>Trạng thái</th>
+  <th style="width:200px">Tiến độ</th>
+  <th class="text-end">Giá tiền</th>
+  <th>Ngày</th>
+  <th></th>
+</tr>
+</thead>
+<tbody>
+{% for o in orders %}
+<tr class="order-row">
+
+  <td class="order-id">{{ o.stt }}</td>
+
+
+  <td>
+    {{ 'Bảo trì' if o.order_type=='baotri' else 'Sửa chữa' }}
+  </td>
+
+  <td>
+    {% if o.status == 'moi' and o.progress >= 0 %}
+      <span class="badge-status status-new">Mới</span>
+    {% elif o.status == 'dang_xu_ly' %}
+      <span class="badge-status status-working">Đang xử lý</span>
+    {% elif o.status == 'da_hoan_thanh' %}
+      <span class="badge-status status-done">Hoàn thành</span>
+    {% elif o.status == 'da_huy' %}
+      <span class="badge-status status-cancel">Đã hủy</span>
+    {% endif %}
+  </td>
+
+  <td>
+    {% if o.progress is not none and o.progress >= 0 %}
+    <div class="progress">
+      <div class="progress-bar
+        {% if o.progress < 40 %}bg-danger
+        {% elif o.progress < 70 %}bg-warning
+        {% else %}bg-success{% endif %}"
+        style="width:{{ o.progress }}%">
+        {{ o.progress }}%
+      </div>
+    </div>
+    {% else %}
+      <span class="text-muted">Chưa có</span>
+    {% endif %}
+  </td>
+
+  <td class="text-end fw-bold">
+    {% if o.price %}
+      {{ "{:,}".format(o.price) }} đ
+    {% else %}
+      <span class="text-muted">Chưa báo</span>
+    {% endif %}
+  </td>
+
+  <td>{{ o.created_at.strftime('%d/%m/%Y') }}</td>
+
+  <!-- 🔥 CỘT HÀNH ĐỘNG -->
+  <td class="text-end">
+
+    <a class="btn btn-sm btn-primary"
+       href="{{ url_for('order_detail', order_id=o.id) }}">
+       Chi tiết
+    </a>
+
+    {% if o.status == 'moi' %}
+    <form method="POST"
+          action="{{ url_for('customer_cancel_order', order_id=o.id) }}"
+          class="d-inline"
+          onsubmit="return confirm('Bạn có chắc muốn hủy đơn không?');">
+
+      <button class="btn btn-sm btn-outline-danger ms-2">
+        ❌ Hủy
+      </button>
+
+    </form>
+    {% endif %}
+
+  </td>
+
+</tr>
+{% else %}
+<tr>
+  <td colspan="7" class="text-center text-muted py-5">
+    Bạn chưa có đơn nào.
+  </td>
+</tr>
+{% endfor %}
+</tbody>
+
+</table>
 
 </div>
-</body>
-</html>
+</div>
+
+{% endblock %}

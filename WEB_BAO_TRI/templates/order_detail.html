@@ -1,92 +1,217 @@
 {% extends "base.html" %}
 {% block content %}
-<h3>Chi tiết đơn #{{ order.id }}</h3>
 
-<p><strong>Loại:</strong> {{ 'Bảo trì' if order.order_type=='baotri' else 'Sửa chữa' }}</p>
-<p><strong>Trạng thái:</strong> {{ order.status }}</p>
-<p><strong>Mô tả:</strong> {{ order.description }}</p>
+<style>
+.order-hero{
+    background:linear-gradient(135deg,#1e40af,#2563eb,#3b82f6);
+    color:white;
+    border-radius:22px;
+    padding:30px 35px 50px 35px;
+    box-shadow:0 18px 45px rgba(0,0,0,.25);
+    position:relative;
+}
+.back-btn{
+    position:absolute;
+    top:20px;
+    left:20px;
+}
+.order-card{
+    background:white;
+    border-radius:18px;
+    box-shadow:0 10px 30px rgba(0,0,0,.08);
+    padding:28px;
+    margin-top:-40px;
+    position:relative;
+    z-index:5;
+}
+.order-label{color:#64748b;font-weight:600;font-size:.85rem;}
+.order-value{font-weight:700;font-size:1.05rem;}
+.status-pill{
+    padding:8px 18px;border-radius:999px;font-weight:700;font-size:.9rem;
+}
+.status-new{background:#e5e7eb;color:#334155;}
+.status-work{background:#fef3c7;color:#92400e;}
+.status-done{background:#dcfce7;color:#166534;}
 
-<p><strong>Khách hàng:</strong>
-    {{ order.customer.full_name }} | {{ order.customer.phone }}
-</p>
+.image-card{
+    border-radius:16px;
+    overflow:hidden;
+    box-shadow:0 8px 24px rgba(0,0,0,.15);
+    transition:.3s;
+}
+.image-card:hover{transform:scale(1.05);}
 
-<p><strong>Kỹ thuật viên:</strong>
-    {% if order.technician %}
-        {{ order.technician.full_name }} | {{ order.technician.phone }}
-    {% else %}
-        Chưa gán
-    {% endif %}
-</p>
+.timeline{
+    border-left:4px solid #2563eb;
+    padding-left:20px;
+}
+.timeline-item{margin-bottom:18px;}
+.timeline-time{font-size:.8rem;color:#64748b;}
+.timeline-note{font-style:italic;color:#334155;}
 
-<hr>
-<h5>Ảnh khách hàng gửi</h5>
+.form-panel{
+    background:#f8fafc;
+    border-radius:16px;
+    padding:22px;
+    box-shadow:0 8px 22px rgba(0,0,0,.08);
+}
+</style>
 
-<div class="row">
-  {% if images %}
-      {% for img in images %}
-      <div class="col-md-3 mb-2">
-        <div class="card">
-          <img src="{{ url_for('uploaded_file', filename=img.file_path.split('/')[-1]) }}"
-               class="card-img-top" />
-          <div class="card-body p-2">
-            <small>{{ img.created_at }}</small>
-          </div>
-        </div>
-      </div>
-      {% endfor %}
-  {% else %}
-      <p>Khách hàng không gửi kèm ảnh.</p>
-  {% endif %}
+<div class="container py-4">
+
+<!-- HERO -->
+<div class="order-hero mb-4">
+
+    <!-- Nút quay lại -->
+    <a href="javascript:history.back()" class="btn btn-light btn-sm back-btn shadow">
+        ⬅ Quay lại
+    </a>
+
+    <h2 class="fw-bold mt-4">Đơn hàng #{{ order.id }}</h2>
+    <p class="mb-0">Theo dõi tiến độ & tình trạng xử lý</p>
 </div>
 
-<hr>
-<h5>Lịch sử thay đổi</h5>
-<ul class="list-group">
-  {% for h in history %}
-  <li class="list-group-item">
-    <strong>{{ h.created_at }}:</strong> {{ h.old_status or 'NULL' }} → {{ h.new_status }}
-    <div>{{ h.note }}</div>
-  </li>
-  {% else %}
-  <li class="list-group-item">Chưa có lịch sử.</li>
-  {% endfor %}
-</ul>
+<!-- INFO -->
+<div class="order-card mb-5">
+<div class="row g-4">
 
+<div class="col-md-4">
+    <div class="order-label">Loại dịch vụ</div>
+    <div class="order-value">
+        {{ 'Bảo trì' if order.order_type=='baotri' else 'Sửa chữa' }}
+    </div>
+</div>
+
+<div class="col-md-4">
+    <div class="order-label">Trạng thái</div>
+    {% if order.status=='moi' %}
+        <span class="status-pill status-new">Mới</span>
+    {% elif order.status=='dang_xu_ly' %}
+        <span class="status-pill status-work">Đang xử lý</span>
+    {% else %}
+        <span class="status-pill status-done">Hoàn thành</span>
+    {% endif %}
+</div>
+
+<div class="col-md-4">
+    <div class="order-label">Ngày tạo</div>
+    <div class="order-value">{{ order.created_at.strftime('%d/%m/%Y') }}</div>
+</div>
+
+<div class="col-md-12">
+    <div class="order-label">Mô tả</div>
+    <div class="order-value">{{ order.description }}</div>
+</div>
+
+<div class="col-md-6">
+    <div class="order-label">Khách hàng</div>
+    <div class="order-value">{{ order.customer.full_name }} – {{ order.customer.phone }}</div>
+</div>
+
+<div class="col-md-6">
+    <div class="order-label">Kỹ thuật viên</div>
+    <div class="order-value">
+        {% if order.technician %}
+            {{ order.technician.full_name }} – {{ order.technician.phone }}
+        {% else %}
+            <span class="text-muted">Chưa gán</span>
+        {% endif %}
+    </div>
+</div>
+
+</div>
+</div>
+
+<!-- IMAGES -->
+<h4 class="fw-bold mb-3">📷 Ảnh khách hàng</h4>
+<div class="row">
+{% for img in images %}
+<div class="col-md-3 col-6 mb-3">
+    <div class="image-card">
+        <img src="{{ url_for('uploaded_file', filename=img.file_path.replace('\\','/')) }}"
+             class="img-fluid"
+             style="height:180px;object-fit:cover;cursor:pointer"
+             onclick="openImageModal(this.src)">
+    </div>
+</div>
+{% else %}
+<p class="text-muted">Không có ảnh.</p>
+{% endfor %}
+</div>
+
+<!-- HISTORY -->
+<h4 class="fw-bold mb-3">📜 Lịch sử trạng thái</h4>
+
+<div class="timeline">
+
+{% set map = {
+    'moi':'Mới',
+    'dang_xu_ly':'Đang xử lý',
+    'da_hoan_thanh':'Đã hoàn thành'
+} %}
+
+{% for h in history %}
+    <div class="timeline-item">
+
+        <div class="timeline-time">
+            {{ h.created_at.strftime('%d/%m/%Y %H:%M') }}
+        </div>
+
+        <div>
+            <strong>
+                {{ map.get(h.old_status, h.old_status) }}
+                →
+                {{ map.get(h.new_status, h.new_status) }}
+            </strong>
+        </div>
+
+        {% if h.note %}
+        <div class="timeline-note">
+            Ghi chú: {{ h.note }}
+        </div>
+        {% endif %}
+
+    </div>
+{% else %}
+    <p class="text-muted">Chưa có lịch sử.</p>
+{% endfor %}
+
+</div>
+
+
+<!-- STATUS UPDATE -->
 {% if session.role in ['technician','admin'] %}
-<hr>
-<h5>Cập nhật trạng thái</h5>
+<div class="form-panel mt-5">
+<h5>⚙️ Cập nhật trạng thái</h5>
 <form method="post">
-  <input type="hidden" name="action" value="update_status">
-  <div class="mb-2">
-    <select name="status" class="form-select">
-      <option value="moi" {% if order.status=='moi' %}selected{% endif %}>Mới</option>
-      <option value="dang_xu_ly" {% if order.status=='dang_xu_ly' %}selected{% endif %}>Đang xử lý</option>
-      <option value="da_hoan_thanh" {% if order.status=='da_hoan_thanh' %}selected{% endif %}>Đã hoàn thành</option>
-    </select>
-  </div>
-  <div class="mb-2">
-    <textarea name="note" class="form-control" placeholder="Ghi chú (tuỳ chọn)"></textarea>
-  </div>
-  <button class="btn btn-success">Cập nhật</button>
+<input type="hidden" name="action" value="update_status">
+<select name="status" class="form-select mb-2">
+  <option value="moi" {% if order.status=='moi' %}selected{% endif %}>Mới</option>
+  <option value="dang_xu_ly" {% if order.status=='dang_xu_ly' %}selected{% endif %}>Đang xử lý</option>
+  <option value="da_hoan_thanh" {% if order.status=='da_hoan_thanh' %}selected{% endif %}>Hoàn thành</option>
+</select>
+<textarea name="note" class="form-control mb-2" placeholder="Ghi chú nội bộ"></textarea>
+<button class="btn btn-primary">Cập nhật</button>
 </form>
+</div>
 {% endif %}
+
+</div>
+
+<!-- IMAGE MODAL -->
+<div class="modal fade" id="imageModal" tabindex="-1">
+<div class="modal-dialog modal-lg modal-dialog-centered">
+<div class="modal-content">
+<img id="modalImage" class="img-fluid rounded">
+</div>
+</div>
+</div>
+
+<script>
+function openImageModal(src){
+    document.getElementById("modalImage").src = src;
+    new bootstrap.Modal(document.getElementById('imageModal')).show();
+}
+</script>
 
 {% endblock %}
-
-{% if session.role == 'admin' %}
-<hr>
-<h5>Gán kỹ thuật viên</h5>
-<form method="post" action="{{ url_for('admin', order_id=order.id) }}">
-  <div class="mb-2">
-    <select name="technician_id" class="form-select">
-      <option value="">Chưa gán</option>
-      {% for tech in technicians %}
-        <option value="{{ tech.id }}" {% if order.technician and order.technician.id == tech.id %}selected{% endif %}>
-          {{ tech.full_name }}
-        </option>
-      {% endfor %}
-    </select>
-  </div>
-  <button type="submit" class="btn btn-primary">Gán</button>
-</form>
-{% endif %}

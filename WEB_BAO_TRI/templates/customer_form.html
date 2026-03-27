@@ -1,38 +1,206 @@
+<style>
+    /* ===== Autocomplete ===== */
+    .autocomplete-box {
+        position: relative;
+    }
+    .autocomplete-list {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        z-index: 1000;
+        max-height: 260px;
+        overflow-y: auto;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .autocomplete-item {
+        padding: 10px 14px;
+        cursor: pointer;
+        font-size: 15px;
+        border-bottom: 1px solid #f5f5f5;
+    }
+    .autocomplete-item:hover {
+        background: #eef4ff;
+        color: #1e40af;
+    }
+
+    /* Input đẹp hơn */
+    .form-control {
+        padding: 12px 14px;
+        font-size: 15px;
+        border-radius: 10px;
+    }
+    select.form-control {
+        padding: 12px 14px;
+    }
+
+    /* Nhãn đẹp */
+    .form-label {
+        font-weight: 600;
+        color: #1e3a8a;
+    }
+
+    /* Card form */
+    .quickfix-card {
+        background: white;
+        padding: 25px;
+        border-radius: 16px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+        border: 1px solid #e5e7eb;
+    }
+
+    /* Button đẹp */
+    .btn-primary {
+        background: #2563eb;
+        border: none;
+        padding: 10px 22px;
+        font-size: 15px;
+        border-radius: 10px;
+    }
+    .btn-primary:hover {
+        background: #1e40af;
+    }
+
+    .btn-secondary {
+        border-radius: 10px;
+        padding: 10px 22px;
+    }
+</style>
+
 {% extends "base.html" %}
 {% block content %}
 
-<h3>Form {{ 'Bảo trì' if order_type=='baotri' else 'Sửa chữa' }}</h3>
+<h3 class="mb-4 fw-bold" style="color:#1e40af;">
+    🛠️ Form {{ 'Bảo trì' if order_type=='baotri' else 'Sửa chữa' }}
+</h3>
+
+<div class="quickfix-card">
 
 <form method="post" enctype="multipart/form-data">
 
 
+  <!-- AUTO COMPLETE + SELECT -->
   <div class="mb-3">
-    <label class="form-label">SĐT</label>
-    <input class="form-control" name="phone">
+      <label class="form-label">Loại máy</label>
+
+      <div class="autocomplete-box mb-2">
+          <input id="machineSearch" type="text" class="form-control"
+                 placeholder="Nhập tên máy để tìm nhanh...">
+          <div id="autocompleteList" class="autocomplete-list d-none"></div>
+      </div>
+
+      <select id="machineSelect" name="machine_type" class="form-control" required>
+          <option value="">-- Chọn loại thiết bị --</option>
+
+          <optgroup label="🖥️ PC (Máy tính để bàn)">
+              <option value="PC văn phòng">PC văn phòng</option>
+              <option value="PC gaming">PC gaming</option>
+              <option value="PC đồ họa">PC đồ họa (Workstation)</option>
+              <option value="PC server mini">PC Server mini</option>
+              <option value="PC all-in-one">PC All-in-one</option>
+              <option value="PC workstation 3D">PC Workstation 3D</option>
+              <option value="PC render video">PC Render video</option>
+              <option value="PC lập trình">PC dùng cho lập trình</option>
+              <option value="PC văn phòng cao cấp">PC văn phòng cao cấp</option>
+              <option value="Mini PC">Mini PC</option>
+          </optgroup>
+
+          <optgroup label="💻 Laptop">
+              <option value="Laptop văn phòng">Laptop văn phòng</option>
+              <option value="Laptop gaming">Laptop gaming</option>
+              <option value="Laptop đồ họa">Laptop đồ họa (Workstation)</option>
+              <option value="Laptop ultrabook">Laptop Ultrabook mỏng nhẹ</option>
+              <option value="Laptop business">Laptop Business</option>
+              <option value="Laptop 2-in-1">Laptop 2-in-1</option>
+              <option value="Laptop sinh viên">Laptop sinh viên</option>
+              <option value="Laptop Apple MacBook">MacBook (Air/Pro)</option>
+              <option value="Laptop gaming tản tốt">Laptop gaming tản tốt</option>
+              <option value="Laptop cũ nâng cấp">Laptop cần nâng cấp</option>
+          </optgroup>
+
+          <optgroup label="📱 Điện thoại">
+              <option value="iPhone">iPhone</option>
+              <option value="Samsung Galaxy">Samsung Galaxy</option>
+              <option value="Xiaomi / Redmi">Xiaomi / Redmi</option>
+              <option value="Oppo">Oppo</option>
+              <option value="Vivo">Vivo</option>
+              <option value="Realme">Realme</option>
+              <option value="Google Pixel">Google Pixel</option>
+              <option value="Sony Xperia">Sony Xperia</option>
+              <option value="Huawei">Huawei</option>
+              <option value="Điện thoại bàn phím">Điện thoại bàn phím</option>
+          </optgroup>
+      </select>
   </div>
 
 
 
-
-  <div class="mb-3">
-    <label class="form-label">Địa chỉ</label>
-    <input class="form-control" name="address">
-  </div>
-
+  <!-- MÔ TẢ -->
   <div class="mb-3">
     <label class="form-label">Mô tả (tùy chọn)</label>
-    <textarea class="form-control" name="description"></textarea>
+    <textarea class="form-control" name="description" rows="3"
+              placeholder="Mô tả tình trạng thiết bị..."></textarea>
   </div>
 
-  <!-- PHẦN UPLOAD ẢNH -->
+  <!-- Ảnh -->
   <div class="mb-3">
     <label class="form-label">Ảnh đính kèm (nếu có)</label>
     <input type="file" name="images" class="form-control" multiple>
-    <small class="text-muted">Cho phép tải nhiều ảnh.</small>
   </div>
 
   <button class="btn btn-primary" type="submit">Gửi yêu cầu</button>
   <a class="btn btn-secondary" href="{{ url_for('customer_choice') }}">Hủy</a>
+
 </form>
+
+</div>
+
+<!-- ======================= SCRIPT AUTO COMPLETE ======================= -->
+<script>
+    const searchInput = document.getElementById("machineSearch");
+    const select = document.getElementById("machineSelect");
+    const listBox = document.getElementById("autocompleteList");
+
+    const options = Array.from(select.querySelectorAll("option"))
+        .filter(opt => opt.value !== "");
+
+    searchInput.addEventListener("input", function () {
+        const keyword = this.value.toLowerCase().trim();
+        listBox.innerHTML = "";
+
+        if (!keyword) return listBox.classList.add("d-none");
+
+        const matched = options.filter(opt =>
+            opt.textContent.toLowerCase().includes(keyword)
+        );
+
+        if (matched.length === 0) return listBox.classList.add("d-none");
+
+        matched.forEach(opt => {
+            const item = document.createElement("div");
+            item.classList.add("autocomplete-item");
+            item.textContent = opt.textContent;
+
+            item.addEventListener("click", () => {
+                searchInput.value = opt.textContent;
+                select.value = opt.value;
+                listBox.classList.add("d-none");
+            });
+
+            listBox.appendChild(item);
+        });
+
+        listBox.classList.remove("d-none");
+    });
+
+    document.addEventListener("click", function (e) {
+        if (!listBox.contains(e.target) && e.target !== searchInput) {
+            listBox.classList.add("d-none");
+        }
+    });
+</script>
 
 {% endblock %}

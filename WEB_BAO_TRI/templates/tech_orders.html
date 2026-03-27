@@ -2,156 +2,258 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Đơn Hàng</title>
+    <title>Dashboard Kỹ Thuật Viên</title>
+
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        body { background: #f5f6fa; }
+
+        .sidebar {
+            width: 230px;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: #1e40af;
+            color: white;
+            padding-top: 20px;
+             display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar a {
+            color: #dbeafe;
+            padding: 12px 20px;
+            display: block;
+            text-decoration: none;
+            font-size: 15px;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: rgba(255,255,255,0.1);
+            border-left: 3px solid #93c5fd;
+            color: white;
+        }
+
+        .content {
+            margin-left: 240px;
+            padding: 20px;
+        }
+
+        .topbar {
+            background: white;
+            padding: 15px 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+            margin-bottom: 25px;
+        }
+    </style>
 </head>
-<div class="bg-white p-3 mb-3 shadow-sm d-flex justify-content-between align-items-center">
-    <div>
-        <strong>Xin chào, {{ session.full_name }}</strong>
-        <span class="text-muted">({{ session.role }})</span>
-    </div>
 
-    <div>
-        {% if session.role == 'admin' %}
-            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-sm btn-outline-secondary me-2">Trang Admin</a>
-        {% endif %}
+<body>
 
-        <a href="{{ url_for('logout') }}" class="btn btn-sm btn-danger">Đăng xuất</a>
-    </div>
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h4 class="text-center mb-4 fw-bold">QuickFIX</h4>
+
+    <a href="#" class="active">
+        <i class="bi bi-list-task me-2"></i> Đơn được giao
+    </a>
+
+
+    <a href="{{ url_for('technician_completed_orders') }}">
+    <i class="bi bi-check-circle me-2"></i> Đơn đã hoàn thành
+</a>
+
+
+    {% if session.role == 'admin' %}
+        <a href="{{ url_for('admin_dashboard') }}">
+            <i class="bi bi-speedometer2 me-2"></i> Trang Admin
+        </a>
+    {% endif %}
+
+    <div style="flex-grow: 1;"></div>
+    <a href="{{ url_for('technician_skills') }}">
+        <i class="bi bi-list-stars me-2"></i> Kỹ năng của tôi
+    </a>
+
+
+    <a href="{{ url_for('logout') }}">
+        <i class="bi bi-box-arrow-left me-2"></i> Đăng xuất
+    </a>
 </div>
 
-<body class="bg-light">
-<div class="container py-4">
+<!-- MAIN -->
+<div class="content">
 
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2>Đơn được giao </h2>
-        {% if session.role == 'admin' %}
-            <a href="{{ url_for('admin_dashboard') }}" class="btn btn-outline-secondary">Về Admin</a>
-        {% endif %}
+    <!-- TOP BAR -->
+    <div class="topbar d-flex justify-content-between align-items-center">
+        <h4 class="mb-0">Xin chào, {{ session.full_name }}</h4>
+        <span class="text-muted">{{ session.role }}</span>
     </div>
+
+    <!-- DASHBOARD STATS -->
+<div class="row mb-4">
+
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0">
+            <div class="card-body text-center">
+                <i class="bi bi-clipboard-data fs-2 text-primary"></i>
+                <h6 class="mt-2 mb-0">Tổng đơn</h6>
+                <h3 class="fw-bold">{{ stats.total }}</h3>
+            </div>
+        </div>
+    </div>
+
+
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0">
+            <div class="card-body text-center">
+                <i class="bi bi-gear-fill fs-2 text-warning"></i>
+                <h6 class="mt-2 mb-0">Đang xử lý</h6>
+                <h3 class="fw-bold">{{ stats.processing }}</h3>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-3">
+        <div class="card shadow-sm border-0">
+            <div class="card-body text-center">
+                <i class="bi bi-check-circle-fill fs-2 text-success"></i>
+                <h6 class="mt-2 mb-0">Hoàn thành</h6>
+                <h3 class="fw-bold">{{ stats.done }}</h3>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+    <!-- TITLE -->
+    <h3 class="fw-bold mb-3">Danh sách đơn được giao</h3>
+
 
     <div class="mb-3">
-    <label class="form-label fw-bold">Lọc theo trạng thái:</label>
-    <select id="filter-status" class="form-select w-auto d-inline-block">
-        <option value="" {% if not request.args.get('status') %}selected{% endif %}>Tất cả</option>
-        <option value="moi" {% if request.args.get('status')=='moi' %}selected{% endif %}>Mới</option>
-        <option value="dang_xu_ly" {% if request.args.get('status')=='dang_xu_ly' %}selected{% endif %}>Đang xử lý</option>
-        <option value="da_hoan_thanh" {% if request.args.get('status')=='da_hoan_thanh' %}selected{% endif %}>Đã hoàn thành</option>
-    </select>
-</div>
-
-<script>
-document.getElementById("filter-status").addEventListener("change", function() {
-    let value = this.value;
-    if (value) {
-        window.location = "?status=" + value;
-    } else {
-        window.location = window.location.pathname;  // hiện tất cả
-    }
-});
-</script>
+        <div class="btn-group" role="group">
+            <a href="?status=all"
+               class="btn btn-outline-secondary {% if current_status=='all' %}active{% endif %}">
+                Tất cả
+            </a>
 
 
-    <table class="table table-bordered bg-white shadow-sm">
-        <thead class="table-light">
-        <tr>
-            <th>#</th>
-            <th>Loại</th>
-            <th>Khách hàng</th>
-            <th>Mô tả</th>
-            <th>Trạng thái</th>
-            <th>Kỹ thuật viên</th>
-            <th>Ngày tạo</th>
-            <th>Hành động</th>
-        </tr>
-        </thead>
+            <a href="?status=dang_xu_ly"
+               class="btn btn-outline-secondary {% if current_status=='dang_xu_ly' %}active{% endif %}">
+                Đang xử lý
+            </a>
 
-        <tbody>
-        {% for o in orders %}
-            <tr>
-                <td>{{ o.id }}</td>
+            <a href="?status=da_hoan_thanh"
+               class="btn btn-outline-secondary {% if current_status=='da_hoan_thanh' %}active{% endif %}">
+                Hoàn thành
+            </a>
+        </div>
+    </div>
 
-                <td>
-                    {% if o.order_type == 'baotri' %}
-                        Bảo trì
-                    {% elif o.order_type == 'suachua' %}
-                        Sửa chữa
-                    {% else %}
-                        {{ o.order_type }}
-                    {% endif %}
-                </td>
+    <!-- TABLE -->
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <table class="table table-hover mb-0 align-middle">
+                <thead class="table-light">
+                <tr>
+                    <th>#</th>
+                    <th>Loại</th>
+                    <th>Loại máy</th>
+                    <th>Khách hàng</th>
+                    <th>Tiến độ</th>
+                    <th>Trạng thái</th>
+                    <th width="90">Chi tiết</th>
+                    <th width="180">Cập nhật</th>
+                </tr>
+                </thead>
 
-                <td>
-                    {% if o.customer %}
-                        {{ o.customer.full_name or '—' }}<br>
-                        {{ o.customer.phone or '' }}
-                    {% else %}
-                        —
-                    {% endif %}
-                </td>
+                <tbody>
+                {% for o in orders %}
+                <tr>
+                    <td>{{ o.id }}</td>
 
-                <td style="max-width:300px; white-space:normal;">{{ o.description or '' }}</td>
+                    <td>
+                        {% if o.order_type == 'baotri' %}
+                            <span class="badge bg-info">Bảo trì</span>
+                        {% else %}
+                            <span class="badge bg-primary">Sửa chữa</span>
+                        {% endif %}
+                    </td>
 
-                <td>
-                    {% if o.status == 'moi' %}
-                        <span class="badge bg-secondary">Mới</span>
-                    {% elif o.status == 'dang_xu_ly' %}
-                        <span class="badge bg-warning">Đang xử lý</span>
-                    {% elif o.status == 'da_hoan_thanh' %}
-                        <span class="badge bg-success">Đã hoàn thành</span>
-                    {% else %}
-                        <span class="badge bg-light text-dark">{{ o.status }}</span>
-                    {% endif %}
-                </td>
+                    <td>
+                        <span class="badge bg-dark">
+                            {{ o.machine_type or 'Chưa xác định' }}
+                        </span>
+                    </td>
 
-                <td>
-                    {% if o.technician %}
-                        {{ o.technician.full_name }}
-                    {% else %}
-                        <span class="text-muted">Chưa gán</span>
-                    {% endif %}
-                </td>
+                    <td>
+                        <strong>{{ o.customer.full_name }}</strong><br>
+                        <small class="text-muted">{{ o.customer.phone }}</small>
+                    </td>
 
-                <td>{{ o.created_at }}</td>
 
-                <td style="min-width:170px;">
-                    <a href="{{ url_for('order_detail', order_id=o.id) }}" class="btn btn-sm btn-primary mb-1">Chi tiết</a>
 
-                    {% if session.role == 'admin' %}
-                        <!-- form gán technician (admin) -->
-                        <form method="post" action="{{ url_for('assign_technician', order_id=o.id) }}" class="d-inline">
-                            <div class="input-group input-group-sm">
-                                <select name="technician_id" class="form-select form-select-sm">
-                                    <option value="">-- Chọn kỹ thuật --</option>
-                                    {% for t in technicians %}
-                                        <option value="{{ t.id }}">{{ t.full_name }}</option>
-                                    {% endfor %}
-                                </select>
-                                <button class="btn btn-sm btn-outline-success" type="submit">Gán</button>
+                    <td style="min-width:150px;">
+                        <div class="progress" style="height:18px;">
+                            <div class="progress-bar
+                                {% if o.progress < 40 %} bg-secondary
+                                {% elif o.progress < 80 %} bg-warning
+                                {% else %} bg-success {% endif %}"
+                                style="width: {{ o.progress }}%;">
+                                {{ o.progress }}%
                             </div>
+                        </div>
+                    </td>
+
+                    <td>
+                        {% if o.status == 'moi' %}
+                            <span class="badge bg-secondary">Mới</span>
+                        {% elif o.status == 'dang_xu_ly' %}
+                            <span class="badge bg-warning text-dark">Đang xử lý</span>
+                        {% else %}
+                            <span class="badge bg-success">Hoàn thành</span>
+                        {% endif %}
+                    </td>
+
+                    <td>
+                        <a href="{{ url_for('order_detail', order_id=o.id) }}"
+                           class="btn btn-sm btn-outline-primary w-100">
+                            <i class="bi bi-eye"></i>
+                        </a>
+                    </td>
+
+                    <td>
+                        <form method="post"
+                              action="{{ url_for('update_order_progress', order_id=o.id) }}">
+                            <input type="number" name="progress"
+                                   min="0" max="100"
+                                   class="form-control form-control-sm mb-1"
+                                   value="{{ o.progress }}">
+                            <button class="btn btn-sm btn-primary w-100">
+                                <i class="bi bi-arrow-repeat"></i> Cập nhật
+                            </button>
                         </form>
-                    {% else %}
-                        <!-- technician có thể cập nhật trạng thái (gửi tới order_detail) -->
-                        <form method="post" action="{{ url_for('order_detail', order_id=o.id) }}">
-                            <input type="hidden" name="action" value="update_status">
-                            <select name="status" class="form-select form-select-sm mb-1">
-                                <option value="moi" {% if o.status=='moi' %}selected{% endif %}>Mới</option>
-                                <option value="dang_xu_ly" {% if o.status=='dang_xu_ly' %}selected{% endif %}>Đang xử lý</option>
-                                <option value="da_hoan_thanh" {% if o.status=='da_hoan_thanh' %}selected{% endif %}>Đã hoàn thành</option>
-                            </select>
-                            <button class="btn btn-sm btn-secondary" type="submit">Cập nhật</button>
-                        </form>
-                    {% endif %}
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="8" class="text-center text-muted">Không có đơn được giao.</td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="9" class="text-center text-muted py-4">
+                        Không có đơn nào được giao
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
 </div>
 </body>
-
 </html>

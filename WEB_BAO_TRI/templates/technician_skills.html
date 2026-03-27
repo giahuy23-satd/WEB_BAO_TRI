@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Kỹ năng kỹ thuật viên</title>
+
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
+
+    <style>
+        body {
+            background: #f5f6fa;
+        }
+
+        /* SIDEBAR */
+        .sidebar {
+            width: 230px;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: #1e40af;
+            color: white;
+            padding-top: 20px;
+
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar a {
+            color: #dbeafe;
+            padding: 12px 20px;
+            display: block;
+            text-decoration: none;
+            font-size: 15px;
+            border-left: 3px solid transparent;
+        }
+
+        .sidebar a:hover,
+        .sidebar a.active {
+            background: rgba(255,255,255,0.1);
+            border-left: 3px solid #93c5fd;
+            color: white;
+        }
+
+        /* CONTENT */
+        .content {
+            margin-left: 240px;   /* chừa chỗ cho sidebar */
+            padding: 25px;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h4 class="text-center mb-4 fw-bold">QuickFIX</h4>
+
+    <a href="{{ url_for('technician') }}">
+        <i class="bi bi-list-task me-2"></i> Đơn được giao
+    </a>
+
+    <a href="{{ url_for('technician_completed_orders') }}">
+        <i class="bi bi-check-circle me-2"></i> Đơn đã hoàn thành
+    </a>
+
+    {% if session.role == 'admin' %}
+        <a href="{{ url_for('admin_dashboard') }}">
+            <i class="bi bi-speedometer2 me-2"></i> Trang Admin
+        </a>
+    {% endif %}
+
+    <!-- đẩy phần dưới xuống đáy -->
+    <div style="flex-grow: 1;"></div>
+
+    <!-- TRANG HIỆN TẠI -->
+    <a href="{{ url_for('technician_skills') }}" class="active">
+        <i class="bi bi-list-stars me-2"></i> Kỹ năng của tôi
+    </a>
+
+    <a href="{{ url_for('logout') }}">
+        <i class="bi bi-box-arrow-left me-2"></i> Đăng xuất
+    </a>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="content">
+
+    <h3 class="fw-bold mb-4">Kỹ năng kỹ thuật viên</h3>
+
+
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <h5 class="fw-bold mb-3">Kỹ năng & mức độ</h5>
+
+            <div class="row">
+
+                {% for s in skills %}
+                <div class="col-md-4 mb-3">
+                    <div class="p-3 border rounded bg-white">
+
+                        <!-- tên kỹ năng -->
+                        <div class="d-flex align-items-center mb-2">
+                            <i class="bi bi-wrench-adjustable-circle text-primary fs-4 me-2"></i>
+
+                            <div>
+                                <strong>
+                                    {% if s.machine_type == 'laptop' %}
+                                        Laptop
+                                    {% elif s.machine_type == 'pc' %}
+                                        PC
+                                    {% elif s.machine_type == 'dien_thoai' %}
+                                        Điện thoại
+                                    {% else %}
+                                        {{ s.machine_type }}
+                                    {% endif %}
+                                </strong>
+
+                                <div class="small text-muted">
+                                    {{ s.order_type }}
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- ⭐ sao -->
+                        <div class="mb-2">
+                            {% for i in range(1, 6) %}
+                                {% if i <= s.level %}
+                                    <i class="bi bi-star-fill text-warning"></i>
+                                {% else %}
+                                    <i class="bi bi-star text-muted"></i>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+
+                        <!-- progress bar -->
+                        <div class="progress" style="height: 8px;">
+                            <div class="progress-bar bg-warning"
+                                 style="width: {{ s.level * 20 }}%;">
+                            </div>
+                        </div>
+
+                        <div class="text-end small mt-1 text-muted">
+                            Level {{ s.level }}/5
+                        </div>
+
+                    </div>
+                </div>
+
+                {% else %}
+                <p class="text-muted">Chưa có kỹ năng nào.</p>
+                {% endfor %}
+
+            </div>
+
+        </div>
+    </div>
+
+
+    <div class="card shadow-sm mb-3">
+        <div class="card-body">
+            <h5 class="fw-bold mb-2">Thông tin cá nhân</h5>
+
+            <p><b>Họ tên:</b> {{ technician.full_name }}</p>
+            <p><b>Email:</b> {{ technician.email }}</p>
+            <p><b>Điện thoại:</b> {{ technician.phone or '—' }}</p>
+            <p><b>Địa chỉ:</b> {{ technician.address or '—' }}</p>
+        </div>
+    </div>
+
+</div>
+
+
+</body>
+</html>

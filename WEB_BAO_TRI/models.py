@@ -5,7 +5,26 @@ from sqlalchemy.sql import func
 from werkzeug.security import generate_password_hash
 import os
 
+
 Base = declarative_base()
+
+class TechnicianSkill(Base):
+    __tablename__ = 'technician_skill'
+
+    id = Column(Integer, primary_key=True)
+    technician_id = Column(Integer, ForeignKey('user.id'), nullable=False)
+
+
+    machine_type = Column(String(255), nullable=False)
+
+
+    order_type = Column(Enum('baotri','suachua', name='skill_order_type'), nullable=False)
+
+
+    level = Column(Integer, default=1)
+
+    technician = relationship('User', backref='skills')
+
 
 class User(Base):
     __tablename__ = 'user'
@@ -14,6 +33,7 @@ class User(Base):
     email = Column(String(150), unique=True)
     phone = Column(String(50))
     password_hash = Column(String(255))
+    address = Column(String(255))
     role = Column(Enum('customer','technician','admin', name='user_roles'), default='customer')
     created_at = Column(TIMESTAMP, server_default=func.now())
 
@@ -29,8 +49,8 @@ class Customer(Base):
 class WorkOrder(Base):
     __tablename__ = 'work_order'
     id = Column(Integer, primary_key=True)
-    customer_id = Column(Integer, ForeignKey('customer.id'), nullable=False)
     technician_id = Column(Integer, ForeignKey('user.id'), nullable=True)
+    customer_id = Column(Integer, ForeignKey('customer.id'), nullable=False)
     order_type = Column(Enum('baotri','suachua', name='order_type'), nullable=False)
     priority = Column(Enum('low','normal','high', name='priority_type'), default='normal')
     description = Column(Text)
@@ -40,6 +60,12 @@ class WorkOrder(Base):
 
     customer = relationship('Customer', backref='orders')
     technician = relationship('User', foreign_keys=[technician_id])
+    progress = Column(Integer, default=0)
+    price = Column(Integer, nullable=True)
+    machine_type = Column(String(255))
+    cancel_reason = Column(Text, nullable=True)
+
+
 
 class OrderImage(Base):
     __tablename__ = 'order_images'

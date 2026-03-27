@@ -1,134 +1,176 @@
-<!DOCTYPE html>
-<html lang="vi">
-<head>
-    <meta charset="UTF-8">
-    <title>Báo cáo thống kê</title>
+{% extends "base.html" %}
+{% block content %}
 
-    <!-- Bootstrap -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<style>
+body { background:#f5f6fa; }
+.kpi-card { border-radius:14px; transition:.25s; }
+.kpi-card:hover { transform:translateY(-4px); box-shadow:0 12px 28px rgba(0,0,0,.12); }
+.chart-container { height:320px; }
+.section-title { font-weight:700; font-size:1.1rem; }
+.table thead th { background:#f8f9fa; font-weight:600; }
+</style>
 
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<ul class="nav nav-tabs mb-4">
 
-    <!-- Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
+    <!-- Đơn -->
+    <li class="nav-item">
+        <a class="nav-link {% if tab=='orders' %}active{% endif %}"
+           href="{{ url_for('admin_orders') }}">
+            <i class="bi bi-list-task me-1"></i> Đơn
+        </a>
+    </li>
 
-    <style>
-        body {
-            background: #f5f6fa;
-        }
+    <!-- Tài khoản -->
+    <li class="nav-item">
+        <a class="nav-link {% if tab=='accounts' %}active{% endif %}"
+           href="{{ url_for('admin_accounts') }}">
+            <i class="bi bi-people me-2"></i> Tài khoản
+        </a>
+    </li>
 
-        .page-title {
-            font-size: 28px;
-            font-weight: 700;
-            margin-bottom: 25px;
-            color: #2c3e50;
-        }
+    <!-- Báo cáo -->
+    <li class="nav-item">
+        <a class="nav-link {% if tab=='reports' %}active{% endif %}"
+           href="{{ url_for('admin_reports') }}">
+            <i class="bi bi-bar-chart-line me-2"></i> Báo cáo
+        </a>
+    </li>
 
-        .card {
-            border-radius: 12px;
-            border: none;
-        }
+</ul>
 
-        .card-header {
-            background: white;
-            border-bottom: 1px solid #eee;
-            font-size: 18px;
-            padding: 14px 18px;
-            font-weight: 600;
-            color: #34495e;
-        }
+<h3 class="fw-bold mb-3">📊 Báo cáo hệ thống</h3>
 
-        .chart-container {
-            width: 100%;
-            max-width: 550px;
-            height: 330px;
-            margin: auto;
-        }
-
-        canvas {
-            max-height: 300px !important;
-        }
-    </style>
-</head>
-
-<body>
-<div class="container py-4">
-
-    <h2 class="page-title">
-        <i class="bi bi-bar-chart-line"></i> Báo cáo thống kê
-    </h2>
-
-    <!-- A. Số lượng đơn theo tháng -->
-    <div class="card mb-4 shadow-sm">
-        <div class="card-header">
-            <i class="bi bi-calendar2-week"></i> Số lượng đơn theo tháng
-        </div>
-        <div class="card-body">
-            <div class="chart-container">
-                <canvas id="chartMonthly"></canvas>
-            </div>
-        </div>
+<!-- FILTER -->
+<form class="row g-2 mb-4">
+    <div class="col-md-4">
+        <input type="date" name="start" value="{{ start }}" class="form-control">
     </div>
-
-    <!-- B. Tỷ lệ loại đơn -->
-    <div class="card mb-4 shadow-sm">
-        <div class="card-header">
-            <i class="bi bi-pie-chart"></i> Tỷ lệ loại đơn (Bảo trì / Sửa chữa)
-        </div>
-        <div class="card-body">
-            <div class="chart-container">
-                <canvas id="chartType"></canvas>
-            </div>
-        </div>
+    <div class="col-md-4">
+        <input type="date" name="end" value="{{ end }}" class="form-control">
     </div>
-
-    <!-- C. Số lượng đơn theo kỹ thuật viên -->
-    <div class="card mb-4 shadow-sm">
-        <div class="card-header">
-            <i class="bi bi-person-gear"></i> Số lượng đơn theo kỹ thuật viên
-        </div>
-        <div class="card-body">
-            <div class="chart-container">
-                <canvas id="chartTech"></canvas>
-            </div>
-        </div>
+    <div class="col-md-4">
+        <button class="btn btn-primary w-100">
+            <i class="bi bi-filter"></i> Lọc thời gian
+        </button>
     </div>
+</form>
+
+<!-- EXPORT BUTTONS -->
+<div class="d-flex justify-content-end gap-2 mb-3">
+    <a href="{{ url_for('export_reports_excel', start=start, end=end) }}"
+       class="btn btn-success">
+        <i class="bi bi-file-earmark-excel"></i> Xuất Excel
+    </a>
 
 </div>
 
+
+<!-- KPI -->
+<div class="row g-3 mb-4">
+    <div class="col-md-2"><div class="card kpi-card text-center p-3">Tổng đơn<br><b>{{ total_orders }}</b></div></div>
+    <div class="col-md-2"><div class="card kpi-card text-center p-3">Đang xử lý<br><b>{{ total_processing }}</b></div></div>
+    <div class="col-md-2"><div class="card kpi-card text-center p-3">Hoàn thành<br><b>{{ total_done }}</b></div></div>
+    <div class="col-md-3"><div class="card kpi-card text-center p-3">Doanh thu<br><b class="text-danger">{{ "{:,.0f}".format(total_revenue) }} ₫</b></div></div>
+    <div class="col-md-3"><div class="card kpi-card text-center p-3">Tỷ lệ hoàn thành<br><b>{{ completion_rate }}%</b></div></div>
+</div>
+
+<!-- EXTRA KPI -->
+<div class="row g-3 mb-4">
+    <div class="col-md-3">
+        <div class="card kpi-card text-center p-3">
+            Doanh thu TB / đơn<br>
+            <b>{{ "{:,.0f}".format(avg_revenue) }} ₫</b>
+        </div>
+    </div>
+</div>
+
+<!-- CHARTS -->
+<div class="row g-4">
+    <div class="col-lg-6">
+        <div class="card p-3">
+            <div class="section-title">Số đơn theo tháng</div>
+            <canvas id="chartMonthly"></canvas>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card p-3">
+            <div class="section-title">Doanh thu theo tháng</div>
+            <canvas id="chartRevenue"></canvas>
+        </div>
+    </div>
+</div>
+
+<div class="row g-4 mt-3">
+    <div class="col-lg-6">
+        <div class="card p-3">
+            <div class="section-title">Số đơn theo kỹ thuật viên</div>
+            <canvas id="chartTech"></canvas>
+        </div>
+    </div>
+    <div class="col-lg-6">
+        <div class="card p-3">
+            <div class="section-title">Doanh thu theo kỹ thuật viên</div>
+            <canvas id="chartTechRevenue"></canvas>
+        </div>
+    </div>
+</div>
+
+<!-- TECH TABLE -->
+<div class="card mt-4 p-3">
+    <div class="section-title mb-2">📊 Phân tích kỹ thuật viên</div>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Tên</th>
+                <th>Tổng đơn</th>
+                <th>Hoàn thành</th>
+                <th>Tỷ lệ</th>
+                <th>Doanh thu</th>
+                <th>TB / đơn</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for t in tech_table %}
+            <tr>
+                <td>{{ t.name }}</td>
+                <td>{{ t.orders }}</td>
+                <td>{{ t.done }}</td>
+                <td>{{ t.completion }}%</td>
+                <td>{{ "{:,.0f}".format(t.revenue) }}</td>
+                <td>{{ "{:,.0f}".format(t.avg) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- DONE ORDERS -->
+<div class="card mt-4 p-3">
+    <div class="section-title mb-2">📋 Đơn hoàn thành</div>
+    <table class="table">
+        <thead>
+            <tr><th>#</th><th>Ngày</th><th>Khách</th><th>KTV</th><th>Giá</th></tr>
+        </thead>
+        <tbody>
+            {% for o in done_orders %}
+            <tr>
+                <td>{{ o.id }}</td>
+                <td>{{ o.created_at.strftime('%d/%m/%Y') if o.created_at }}</td>
+                <td>{{ o.customer.full_name if o.customer }}</td>
+                <td>{{ o.technician.full_name if o.technician }}</td>
+                <td class="text-danger fw-bold">{{ "{:,.0f}".format(o.price or 0) }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 <script>
-    const monthlyData = {{ monthly_data | safe }};
-    const typeData = {{ type_data | safe }};
-    const techData = {{ tech_data | safe }};
-
-    new Chart(document.getElementById('chartMonthly'), {
-        type: 'line',
-        data: monthlyData,
-        options: {
-            responsive: true,
-            maintainAspectRatio: false
-        }
-    });
-
-    new Chart(document.getElementById('chartType'), {
-        type: 'pie',
-        data: typeData,
-        options: {
-            responsive: true,
-            maintainAspectRatio: false
-        }
-    });
-
-    new Chart(document.getElementById('chartTech'), {
-        type: 'bar',
-        data: techData,
-        options: {
-            responsive: true,
-            maintainAspectRatio: false
-        }
-    });
+new Chart(chartMonthly,{type:'line',data:{{ monthly_data|safe }}});
+new Chart(chartRevenue,{type:'bar',data:{{ revenue_data|safe }}});
+new Chart(chartTech,{type:'bar',data:{{ tech_data|safe }}});
+new Chart(chartTechRevenue,{type:'bar',data:{{ tech_revenue_data|safe }}});
 </script>
 
-</body>
-</html>
+{% endblock %}

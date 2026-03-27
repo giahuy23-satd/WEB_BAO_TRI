@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <style>
+body {
+    font-family: "DejaVu";
+    font-size: 12px;
+}
+</style>
+
+
+</head>
+<body>
+
+<h2>BÁO CÁO ĐƠN HOÀN THÀNH</h2>
+
+<table>
+    <thead>
+        <tr>
+            <th>#</th>
+            <th>Ngày</th>
+            <th>Khách hàng</th>
+            <th>Kỹ thuật viên</th>
+            <th>Giá (₫)</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for o in orders %}
+        <tr>
+            <td>{{ o.id }}</td>
+            <td>{{ o.created_at.strftime('%d/%m/%Y') if o.created_at }}</td>
+            <td>{{ o.customer.full_name if o.customer }}</td>
+            <td>{{ o.technician.full_name if o.technician }}</td>
+            <td>{{ "{:,.0f}".format(o.price or 0) }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+
+<div class="total">
+    Tong doanh thu: {{ "{:,.0f}".format(total_revenue) }} VND
+</div>
+
+</body>
+</html>

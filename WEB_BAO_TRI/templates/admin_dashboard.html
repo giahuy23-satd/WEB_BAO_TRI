@@ -1,42 +1,177 @@
-{% extends "base.html" %}
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin Dashboard</title>
 
-{% block content %}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css" rel="stylesheet">
 
-<h2 class="mb-4">Admin Dashboard</h2>
+    <style>
+        body {
+            background: #f5f6fa;
+        }
 
-<ul class="nav nav-tabs mb-3">
+        /* Sidebar */
+        .sidebar {
+            width: 240px;
+            height: 100vh;
+            position: fixed;
+            left: 0;
+            top: 0;
+            background: #111827;
+            color: white;
+            padding-top: 25px;
+        }
 
+        .sidebar h4 {
+            text-align: center;
+            margin-bottom: 25px;
+            font-weight: bold;
+        }
+
+        .sidebar a {
+            color: #e5e7eb;
+            padding: 12px 22px;
+            display: block;
+            text-decoration: none;
+            font-size: 16px;
+            border-left: 4px solid transparent;
+        }
+
+        .sidebar a.active,
+        .sidebar a:hover {
+            background: #1f2937;
+            color: white;
+            border-left: 4px solid #3b82f6;
+        }
+
+        /* Main content */
+        .content {
+            margin-left: 250px;
+            padding: 25px;
+        }
+
+        .topbar {
+            background: white;
+            padding: 15px 25px;
+            border-radius: 12px;
+            box-shadow: 0 2px 6px rgba(0,0,0,0.08);
+        }
+
+        .nav-tabs .nav-link {
+            font-weight: 500;
+        }
+
+        .nav-tabs .nav-link.active {
+            background-color: #2563eb;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+    <h4>ADMIN PANEL</h4>
+
+    <ul class="nav nav-tabs mb-4">
+
+    <!-- Đơn -->
     <li class="nav-item">
         <a class="nav-link {% if tab=='orders' %}active{% endif %}"
            href="{{ url_for('admin_orders') }}">
-            Đơn
+            <i class="bi bi-card-checklist me-2"></i> Đơn
         </a>
     </li>
 
+    <!-- Tài khoản -->
     <li class="nav-item">
         <a class="nav-link {% if tab=='accounts' %}active{% endif %}"
            href="{{ url_for('admin_accounts') }}">
-            Tài khoản
+            <i class="bi bi-people me-2"></i> Tài khoản
         </a>
     </li>
 
+    <!-- Báo cáo -->
     <li class="nav-item">
         <a class="nav-link {% if tab=='reports' %}active{% endif %}"
            href="{{ url_for('admin_reports') }}">
-            Báo cáo
+            <i class="bi bi-bar-chart-line me-2"></i> Báo cáo
         </a>
     </li>
 
 </ul>
 
 
-<!-- NỘI DUNG TÙY THEO TAB -->
-{% if tab == "orders" %}
-    {% include "admin_orders.html" %}
-{% elif tab == "accounts" %}
-    {% include "admin_accounts.html" %}
-{% elif tab == "reports" %}
-    {% include "admin_reports.html" %}
-{% endif %}
+    <a href="{{ url_for('index') }}">
+        <i class="bi bi-arrow-left me-2"></i> Về trang chính
+    </a>
 
-{% endblock %}
+    <a href="{{ url_for('logout') }}">
+        <i class="bi bi-box-arrow-right me-2"></i> Đăng xuất
+    </a>
+</div>
+
+
+<!-- MAIN CONTENT -->
+<div class="content">
+
+    <!-- Top bar -->
+    <div class="topbar d-flex justify-content-between align-items-center mb-4">
+        <h3 class="fw-bold mb-0">Admin Dashboard</h3>
+
+        <div>
+            <strong>{{ session.full_name }}</strong>
+            <span class="text-muted">({{ session.role }})</span>
+        </div>
+    </div>
+
+
+    <!-- TABS -->
+    <ul class="nav nav-tabs mb-4">
+        <li class="nav-item">
+            <a class="nav-link {% if tab=='orders' %}active{% endif %}"
+               href="{{ url_for('admin_dashboard', tab='orders') }}">
+                <i class="bi bi-list-task me-1"></i> Đơn
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link {% if tab=='accounts' %}active{% endif %}"
+               href="{{ url_for('admin_dashboard', tab='accounts') }}">
+                <i class="bi bi-person-badge me-1"></i> Tài khoản
+            </a>
+        </li>
+
+        <li class="nav-item">
+            <a class="nav-link {% if tab=='reports' %}active{% endif %}"
+               href="{{ url_for('admin_dashboard', tab='reports') }}">
+                <i class="bi bi-graph-up-arrow me-1"></i> Báo cáo
+            </a>
+        </li>
+    </ul>
+
+
+    <!-- TAB CONTENT -->
+    <div class="card shadow-sm">
+        <div class="card-body">
+
+            {% if tab == 'orders' %}
+                {% include "admin_orders.html" %}
+
+            {% elif tab == 'accounts' %}
+                {% include "admin_accounts.html" %}
+
+            {% elif tab == 'reports' %}
+                {% include "admin_reports.html" %}
+            {% endif %}
+
+        </div>
+    </div>
+
+</div>
+
+</body>
+</html>
